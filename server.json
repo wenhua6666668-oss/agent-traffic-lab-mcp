@@ -1,0 +1,11 @@
+{
+  "name": "com.agenttrafficlab/atl",
+  "description": "Agent Traffic Lab provides machine and AI-agent service discovery, decision, routing, execution feedback, and outcome intelligence.",
+  "version": "0.1.1",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.agenttrafficlab.com/mcp"
+    }
+  ]
+}
