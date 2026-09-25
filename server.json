@@ -3,7 +3,7 @@
   "name": "com.agenttrafficlab/atl",
   "title": "Agent Traffic Lab",
   "description": "Find a verified executable provider for a task, with callable handoff and fallback.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "remotes": [
     {
       "type": "streamable-http",
