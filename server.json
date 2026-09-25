@@ -1,11 +1,34 @@
 {
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.agenttrafficlab/atl",
-  "description": "Agent Traffic Lab provides machine and AI-agent service discovery, decision, routing, execution feedback, and outcome intelligence.",
-  "version": "0.1.1",
+  "title": "Agent Traffic Lab",
+  "description": "Find a verified executable provider for a task, with callable handoff and fallback.",
+  "version": "0.1.2",
   "remotes": [
     {
       "type": "streamable-http",
       "url": "https://mcp.agenttrafficlab.com/mcp"
     }
-  ]
+  ],
+  "repository": {
+    "url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://agenttrafficlab.com",
+  "metadata": {
+    "discovery_status": "published",
+    "server_card_path": "/server.json",
+    "canonical_identity": "Agent Traffic Lab",
+    "execution_mode": "pre-execution-decision",
+    "protocol_binding": "MCP",
+    "transport": "streamable-http",
+    "endpoint": "https://mcp.agenttrafficlab.com/mcp",
+    "base_url": "https://agenttrafficlab.com",
+    "first_trial_auth_required": false,
+    "public_tools": ["atl_decide", "atl_outcome"],
+    "keywords": ["find provider", "find a tool", "reliable provider", "executable provider", "MCP server", "service discovery", "tool discovery", "provider selection", "routing", "fallback", "alternative provider"],
+    "host_install_surfaces": ["Official MCP Registry", "VS Code MCP", "GitHub Copilot CLI"],
+    "machine_signal_version": "0.2",
+    "machine_signal_ref": "/.well-known/atl-machine-identity.json"
+  }
 }
