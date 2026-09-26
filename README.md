@@ -1,6 +1,6 @@
 # Agent Traffic Lab
 
-Agent Traffic Lab (ATL) is public infrastructure for machine and AI-agent service discovery, decision, routing, execution feedback, and outcome intelligence.
+Agent Traffic Lab (ATL) is public infrastructure for machine and AI-agent service discovery, decision, routing, execution, automatic Outcome recording, and outcome intelligence.
 
 ## Public MCP Endpoint
 
@@ -22,8 +22,11 @@ pip install agenttrafficlab
 
 ## Core Capabilities
 
-- `atl_decide` — discover and select suitable machine-service providers for a task.
-- `atl_outcome` — report execution outcomes back to ATL.
+- `atl_decide` — discover and select a suitable machine-service provider for a task.
+- `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
+- `atl_outcome` — report the real result when execution happens outside ATL.
+
+Provider identity remains ATL-owned on `atl_execute`; callers cannot override the selected provider.
 
 ## MCP
 
@@ -36,15 +39,17 @@ Protocol: Model Context Protocol (MCP)
 
 ## Discovery Keywords
 
-AI agents · MCP · Model Context Protocol · tool discovery · provider routing · agent routing · fallback · agent infrastructure · machine-service discovery
+AI agents · MCP · Model Context Protocol · tool discovery · provider routing · agent routing · execution · automatic outcome · fallback · agent infrastructure · machine-service discovery
 
 ## Purpose
 
-ATL provides a neutral machine-service decision layer designed to help agents discover, evaluate, route to, and learn from service providers.
+ATL provides a neutral machine-service routing layer designed to help agents discover, evaluate, route to, execute through, and learn from service providers.
 
-The long-term feedback loop is:
+The feedback loop is:
 
 Discover → Inspect → Decide → Route → Execute → Outcome → Reputation → Decide again
+
+For ATL-owned execution, `atl_execute` records the durable Outcome automatically. `atl_outcome` remains available when the caller executes externally.
 
 ## Links
 
