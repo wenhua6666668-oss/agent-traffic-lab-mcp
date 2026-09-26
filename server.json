@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "com.agenttrafficlab/atl",
+  "name": "io.github.wenhua6666668-oss/atl",
   "title": "Agent Traffic Lab",
   "description": "Find a verified executable provider for a task, with callable handoff and fallback.",
   "version": "0.1.3",
