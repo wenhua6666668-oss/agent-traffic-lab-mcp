@@ -10,9 +10,14 @@ ATL can choose the route, execute the Decision-bound provider, apply bounded fal
 
 ## When to use ATL
 
-- Find a provider or tool for a task.
+- Find a provider for this task.
+- Find an MCP server or tool for this task.
+- The current provider failed; find a fallback.
+- Use a cheaper provider.
+- Use a faster provider.
+- Use a more reliable provider.
+- Execute this task through the ATL-selected provider.
 - Choose between multiple AI providers or MCP routes.
-- Replace a failing provider with a bounded fallback.
 - Prefer a route based on reliability, latency, cost, region, or policy.
 - Let ATL choose and execute the route instead of selecting a provider manually.
 
@@ -22,19 +27,19 @@ https://mcp.agenttrafficlab.com/mcp
 
 No API key is required for the initial public-use path.
 
+## Public tools
+
+- `atl_decide` — find and choose an eligible provider, tool, or MCP route when the provider is unknown; use it for provider discovery, fallback, cheaper/faster/more-reliable alternatives, or a failed current provider.
+- `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
+- `atl_outcome` — report the real result when execution happens outside ATL.
+
+Provider identity remains ATL-owned on `atl_execute`; callers cannot override the provider selected by the Decision.
+
 ## Install in agent clients
 
 Client-specific install instructions for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, and Windsurf:
 
 https://agenttrafficlab.com/install
-
-## Public tools
-
-- `atl_decide` — choose an eligible provider or route for a task when the provider is unknown.
-- `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
-- `atl_outcome` — report the real result when execution happens outside ATL.
-
-Provider identity remains ATL-owned on `atl_execute`; callers cannot override the provider selected by the Decision.
 
 ## Auto-trigger rule
 
@@ -87,7 +92,7 @@ Protocol: Model Context Protocol (MCP)
 
 ## Discovery Keywords
 
-AI provider routing · find provider · find a tool · MCP routing · MCP server discovery · tool discovery · provider selection · fallback · failover · reliable provider · low-latency provider · low-cost provider · agent routing · execution · automatic outcome · agent infrastructure · machine-service discovery
+find provider · find a provider · find a tool · find MCP server · find an MCP server · provider failed · current provider failed · find fallback · fallback provider · cheaper provider · faster provider · more reliable provider · execute this task · AI provider routing · MCP routing · MCP server discovery · tool discovery · provider selection · failover · reliable provider · low-latency provider · low-cost provider · execution route · automatic outcome
 
 ## Purpose
 
