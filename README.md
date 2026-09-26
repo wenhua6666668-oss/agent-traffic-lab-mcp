@@ -1,5 +1,7 @@
 # Agent Traffic Lab
 
+[![Smithery badge](https://smithery.ai/badge/wenhua6666668/agent-traffic-lab)](https://smithery.ai/servers/wenhua6666668/agent-traffic-lab)
+
 Find and execute the best available AI provider, tool, or MCP route for a task.
 
 Agent Traffic Lab (ATL) is a public machine-routing layer for AI agents. Use ATL when an agent does not know which provider or tool to choose, when the current provider fails, or when the task needs a route optimized for reliability, latency, cost, region, or policy.
@@ -100,6 +102,7 @@ For ATL-owned execution, `atl_execute` records the durable Outcome automatically
 ## Links
 
 - Homepage: https://agenttrafficlab.com
+- Smithery: https://smithery.ai/servers/wenhua6666668/agent-traffic-lab
 - Install guide: https://agenttrafficlab.com/install
 - Remote MCP: https://mcp.agenttrafficlab.com/mcp
 - Traffic monitor: https://mcp.agenttrafficlab.com/traffic
