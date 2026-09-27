@@ -2,6 +2,6 @@ dependencies:
   tools:
     - type: "mcp"
       value: "atl"
-      description: "Agent Traffic Lab remote MCP for provider discovery, routing, execution, fallback, and outcomes"
+      description: "Agent Traffic Lab remote MCP for one-step supported task completion, provider discovery, routing, bounded fallback, and outcomes"
       transport: "streamable_http"
       url: "https://mcp.agenttrafficlab.com/mcp"
