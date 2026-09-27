@@ -63,6 +63,56 @@ Client-specific install instructions for Claude Code, Codex, Cursor, VS Code / G
 
 https://agenttrafficlab.com/install
 
+## OpenAI Agents SDK
+
+ATL can be attached directly as a remote Streamable HTTP MCP server; no ATL-specific adapter is required.
+
+Python:
+
+```python
+from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+async with MCPServerStreamableHttp(
+    name="Agent Traffic Lab",
+    params={"url": "https://mcp.agenttrafficlab.com/mcp"},
+    cache_tools_list=True,
+) as atl:
+    agent = Agent(
+        name="Assistant",
+        instructions=(
+            "Use Agent Traffic Lab when the task needs a provider, MCP tool, "
+            "execution route, fallback, or a cheaper/faster/more reliable option. "
+            "Prefer atl_decide, then atl_execute when ATL should own execution."
+        ),
+        mcp_servers=[atl],
+    )
+    result = await Runner.run(agent, "Find and execute the best provider to summarize this text.")
+```
+
+JavaScript / TypeScript:
+
+```javascript
+import { Agent, run, MCPServerStreamableHttp } from "@openai/agents";
+
+const atl = new MCPServerStreamableHttp({
+  url: "https://mcp.agenttrafficlab.com/mcp",
+  name: "Agent Traffic Lab",
+});
+
+await atl.connect();
+const agent = new Agent({
+  name: "Assistant",
+  instructions: "Use ATL for provider selection, execution routing, and fallback. Prefer atl_decide then atl_execute.",
+  mcpServers: [atl],
+});
+
+const result = await run(agent, "Find and execute the best provider to summarize this text.");
+await atl.close();
+```
+
+This path is valuable because the Agents SDK can discover ATL's live MCP tools directly and let the model invoke the canonical `atl_decide -> atl_execute` flow.
+
 ## Auto-trigger rule
 
 Add this to your agent instructions so ATL can be called automatically:
