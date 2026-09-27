@@ -66,7 +66,7 @@ The Agent Card is the discovery URL and is fetched with `GET`. The `/a2a` endpoi
 
 Through A2A, ATL is not only a provider-selection directory. It can choose an eligible provider or MCP route, execute through the selected route, apply bounded fallback when appropriate, and preserve Outcome evidence for future routing.
 
-## Public tools
+## Tools
 
 - `atl_decide` — route a supported natural-language task to an eligible provider, tool, or MCP route. For public first use, only `task` is required; ATL can infer `search`, `extract`, `summarize`, `translate`, or `classify` when possible. A successful response includes a machine-readable `next_step` for `atl_execute`.
 - `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
