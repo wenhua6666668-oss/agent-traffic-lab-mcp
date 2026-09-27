@@ -35,6 +35,20 @@ https://mcp.agenttrafficlab.com/mcp
 
 No API key is required for the initial public-use path.
 
+## A2A discovery and execution
+
+Canonical A2A Agent Card:
+
+https://agenttrafficlab.com/.well-known/agent-card.json
+
+Canonical A2A execution endpoint:
+
+https://agenttrafficlab.com/a2a
+
+The Agent Card is the discovery URL and is fetched with `GET`. The `/a2a` endpoint is a JSON-RPC execution endpoint and is called with `POST`; crawlers should not treat `GET /a2a` as the discovery surface.
+
+Through A2A, ATL is not only a provider-selection directory. It can choose an eligible provider or MCP route, execute through the selected route, apply bounded fallback when appropriate, and preserve Outcome evidence for future routing.
+
 ## Public tools
 
 - `atl_decide` — find and choose an eligible provider, tool, or MCP route when the provider is unknown; use it for provider discovery, fallback, cheaper/faster/more-reliable alternatives, or a failed current provider.
@@ -118,6 +132,8 @@ For ATL-owned execution, `atl_execute` records the durable Outcome automatically
 - Smithery: https://smithery.ai/servers/wenhua6666668/agent-traffic-lab
 - Install guide: https://agenttrafficlab.com/install
 - Remote MCP: https://mcp.agenttrafficlab.com/mcp
+- A2A Agent Card: https://agenttrafficlab.com/.well-known/agent-card.json
+- A2A endpoint: https://agenttrafficlab.com/a2a
 - Traffic monitor: https://mcp.agenttrafficlab.com/traffic
 - npm: https://www.npmjs.com/package/@agenttrafficlab/client
 - PyPI: https://pypi.org/project/agenttrafficlab/
