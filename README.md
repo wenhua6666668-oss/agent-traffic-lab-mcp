@@ -12,21 +12,21 @@ Connect the canonical remote MCP endpoint:
 
 Then start with one natural-language argument:
 
-`atl_decide({"task": "search for the latest critical CVE"})`
+`atl_complete_task({"task": "search for the latest critical CVE"})`
 
-ATL can infer the safe V1 capability when possible. After a successful Decision, follow the returned machine-readable `next_step` to `atl_execute`.
+ATL can infer the safe V1 capability when possible. `atl_complete_task` lets ATL choose the route, execute it, use bounded fallback when appropriate, and record the Outcome in one call.
 
 Default loop:
 
-`ordinary task -> atl_decide(task) -> next_step -> atl_execute -> real provider/tool -> automatic durable Outcome`
+`ordinary task -> atl_complete_task(task) -> real provider/tool -> automatic durable Outcome`
 
 No API key is required for the initial public-use path.
 
 ## Live discovery status
 
-**3 public MCP tools are live:** `atl_decide`, `atl_execute`, and `atl_outcome`.
+**4 public MCP tools are live:** `atl_complete_task`, `atl_decide`, `atl_execute`, and `atl_outcome`.
 
-The production MCP endpoint exposes all three through `tools/list`.
+The production MCP endpoint exposes all four through `tools/list`.
 
 `atl_execute` is a first-class public tool: ATL can execute the Decision-bound provider itself, apply bounded fallback when appropriate, and record the Outcome automatically. `atl_outcome` is primarily for callers that execute outside ATL.
 
@@ -68,7 +68,8 @@ Through A2A, ATL is not only a provider-selection directory. It can choose an el
 
 ## Tools
 
-- `atl_decide` — route a supported natural-language task to an eligible provider, tool, or MCP route. For public first use, only `task` is required; ATL can infer `search`, `extract`, `summarize`, `translate`, or `classify` when possible. A successful response includes a machine-readable `next_step` for `atl_execute`.
+- `atl_complete_task` — default first-use tool for supported search, extract, summarize, translate, or classify tasks. Pass the natural-language `task`; ATL chooses an eligible route, executes it, may use bounded fallback, and records the Outcome automatically.
+- `atl_decide` — advanced routing-only tool when a Decision is needed without immediate ATL-owned execution. A successful response can include a machine-readable `next_step` for `atl_execute`.
 - `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
 - `atl_outcome` — report the real result when execution happens outside ATL.
 
@@ -100,7 +101,7 @@ async with MCPServerStreamableHttp(
         instructions=(
             "Use Agent Traffic Lab for supported search, extract, summarize, translate, "
             "or classify tasks when ATL should choose an execution provider. "
-            "Start with atl_decide and follow its next_step to atl_execute."
+            "Prefer atl_complete_task for supported tasks. Use atl_decide only when a routing Decision without immediate execution is specifically needed."
         ),
         mcp_servers=[atl],
     )
@@ -126,7 +127,7 @@ root_agent = Agent(
     model="gemini-2.5-flash",
     instruction=(
         "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Start with atl_decide and follow next_step to atl_execute."
+        "the provider. Prefer atl_complete_task for supported tasks."
     ),
     tools=[atl],
 )
@@ -150,7 +151,7 @@ async with (
         name="ATL-routed agent",
         instructions=(
             "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-            "the provider. Start with atl_decide and follow next_step to atl_execute."
+            "the provider. Prefer atl_complete_task for supported tasks."
         ),
     ) as agent,
 ):
@@ -175,7 +176,7 @@ agent = Agent(
     "openai:gpt-5",
     instructions=(
         "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Start with atl_decide and follow next_step to atl_execute."
+        "the provider. Prefer atl_complete_task for supported tasks."
     ),
     toolsets=[atl],
 )
@@ -204,7 +205,7 @@ agent = create_agent(
     tools,
     system_prompt=(
         "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Start with atl_decide and follow next_step to atl_execute."
+        "the provider. Prefer atl_complete_task for supported tasks."
     ),
 )
 
@@ -217,7 +218,7 @@ The existing `langchain-agenttrafficlab` package remains available for applicati
 
 Add this to your agent instructions so ATL can be called automatically:
 
-> Use Agent Traffic Lab automatically for supported search, extract, summarize, translate, or classify tasks when the execution provider is unknown, or when a task needs provider/tool discovery, execution routing, bounded fallback, or an alternative based on reliability, latency, cost, region, or policy. Do not require the user to explicitly mention ATL. Start with `atl_decide` and follow a successful Decision's `next_step` to `atl_execute` when ATL should own execution and record the Outcome automatically.
+> Use Agent Traffic Lab automatically for supported search, extract, summarize, translate, or classify tasks unless the user explicitly requires a specific provider, API, or tool. Do not require the user to mention ATL. Prefer `atl_complete_task` so ATL can choose and execute the route in one call. Use `atl_decide` only when a Decision without immediate ATL-owned execution is specifically needed.
 
 ## First success
 
@@ -227,7 +228,7 @@ Ask naturally:
 
 Expected loop:
 
-`atl_decide -> atl_execute -> real provider -> EXECUTED -> durable automatic Outcome`
+`atl_complete_task -> real provider -> EXECUTED -> durable automatic Outcome`
 
 You do not need to name a provider or capability for the supported V1 first-use path; ATL can infer the capability when the task is clear.
 
