@@ -113,6 +113,36 @@ await atl.close();
 
 This path is valuable because the Agents SDK can discover ATL's live MCP tools directly and let the model invoke the canonical `atl_decide -> atl_execute` flow.
 
+## Google Agent Development Kit (ADK)
+
+Google ADK can also connect ATL directly over Streamable HTTP MCP; no ATL-specific adapter is required.
+
+Python:
+
+```python
+from google.adk.agents import Agent
+from google.adk.tools.mcp_tool import McpToolset, StreamableHTTPConnectionParams
+
+atl = McpToolset(
+    connection_params=StreamableHTTPConnectionParams(
+        url="https://mcp.agenttrafficlab.com/mcp"
+    )
+)
+
+root_agent = Agent(
+    name="atl_routed_agent",
+    model="gemini-2.5-flash",
+    instruction=(
+        "Use Agent Traffic Lab when you need to choose a provider, MCP tool, "
+        "execution route, fallback, or a cheaper/faster/more reliable option. "
+        "Prefer atl_decide, then atl_execute when ATL should own execution."
+    ),
+    tools=[atl],
+)
+```
+
+This keeps the integration machine-native: Google ADK discovers ATL's live MCP tool surface directly from the canonical endpoint.
+
 ## Auto-trigger rule
 
 Add this to your agent instructions so ATL can be called automatically:
