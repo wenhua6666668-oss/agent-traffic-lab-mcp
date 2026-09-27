@@ -16,5 +16,17 @@
     "execution",
     "provider-discovery",
     "fallback"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Agent Traffic Lab",
+        "shortDescription": "Connect once, then let ATL route and execute supported tasks.",
+        "longDescription": "Agent Traffic Lab gives ChatGPT and Codex one routing and execution layer for supported search, extract, summarize, translate, and classify tasks. ATL selects an eligible provider or MCP route, can apply bounded fallback, and records Outcomes when it owns execution.",
+        "developerName": "Agent Traffic Lab",
+        "websiteURL": "https://agenttrafficlab.com",
+        "defaultPrompt": "Use Agent Traffic Lab when a supported task needs provider discovery, execution routing, or fallback."
+      }
+    }
+  }
 }
