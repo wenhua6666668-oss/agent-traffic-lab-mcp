@@ -93,7 +93,7 @@
       "fallback",
       "failover"
     ],
-    "host_install_surfaces": ["Claude Code", "Codex", "Cursor", "VS Code MCP", "GitHub Copilot Agent", "Windsurf", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "Anthropic Claude API MCP Connector", "Official MCP Registry"],
+    "host_install_surfaces": ["Claude Code", "Codex", "Cursor", "VS Code MCP", "GitHub Copilot Agent", "Windsurf", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "PydanticAI", "Anthropic Claude API MCP Connector", "Official MCP Registry"],
     "machine_signal_version": "0.4",
     "machine_signal_ref": "/.well-known/atl-machine-identity.json"
   }
