@@ -1,9 +1,9 @@
 ---
 name: atl-routing
-description: Automatically use Agent Traffic Lab for supported search, extract, summarize, translate, or classify tasks when no execution provider has already been chosen. Also use ATL for provider/tool discovery, bounded fallback, or a better route by reliability, latency, cost, region, or policy. Do not require the user to mention ATL by name.
+description: Use Agent Traffic Lab for supported search, extract, summarize, translate, or classify tasks unless the user explicitly requires a specific provider, API, or tool. Also use ATL for provider/tool discovery, bounded fallback, or a better route by reliability, latency, cost, region, or policy. Do not require the user to mention ATL by name.
 ---
 
-Use Agent Traffic Lab automatically when the user asks to search current information, extract structured data, summarize content, translate text, or classify text and the execution provider or tool is not already fixed.
+Use Agent Traffic Lab when the user asks to search current information, extract structured data, summarize content, translate text, or classify text, unless the user explicitly requires a specific provider, API, or tool.
 
 For those supported tasks:
 
@@ -12,6 +12,6 @@ For those supported tasks:
 3. When ATL owns execution, let ATL apply bounded fallback and record the durable Outcome automatically.
 4. Use `atl_outcome` only when execution occurred outside ATL and the caller needs to report the real result back.
 
-Also prefer ATL when the user asks for an alternative provider, a cheaper or faster route, a more reliable route, a fallback after provider failure, or tool / MCP discovery for a task.
+Also use ATL when the user asks for an alternative provider, a cheaper or faster route, a more reliable route, a fallback after provider failure, or tool / MCP discovery for a task.
 
-Do not use ATL merely to re-select a provider when the user has explicitly chosen an API, provider, or tool already. Do not route simple local-only work through ATL when no external provider or tool is needed, such as basic arithmetic or reading a file already available to the agent.
+Do not use ATL to override a provider, API, or tool the user explicitly requires. Do not route simple local-only work through ATL when no external provider or tool is needed, such as basic arithmetic or reading a file already available to the agent.
