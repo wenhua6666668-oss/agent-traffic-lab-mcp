@@ -4,16 +4,8 @@
   "title": "Agent Traffic Lab",
   "description": "ATL doesn't just help agents find tools — it gets the job done. It routes supported tasks such as search, extract, summarize, translate, and classify to an eligible AI provider, tool, or MCP server, executes the task, and can switch to a bounded fallback when a provider fails. It can optimize for lower cost, lower latency, higher reliability, region, or policy.",
   "version": "0.1.3",
-  "remotes": [
-    {
-      "type": "streamable-http",
-      "url": "https://mcp.agenttrafficlab.com/mcp"
-    }
-  ],
-  "repository": {
-    "url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
-    "source": "github"
-  },
+  "remotes": [{"type": "streamable-http", "url": "https://mcp.agenttrafficlab.com/mcp"}],
+  "repository": {"url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp", "source": "github"},
   "websiteUrl": "https://agenttrafficlab.com",
   "metadata": {
     "discovery_status": "published",
@@ -28,12 +20,7 @@
     "first_trial_auth_required": false,
     "public_tools": ["atl_decide", "atl_execute", "atl_outcome"],
     "safe_v1_capabilities": ["search", "extract", "summarize", "translate", "classify"],
-    "first_use": {
-      "tool": "atl_decide",
-      "minimum_arguments": ["task"],
-      "capability_inference": true,
-      "execution_next_step": "atl_execute"
-    },
+    "first_use": {"tool": "atl_decide", "minimum_arguments": ["task"], "capability_inference": true, "execution_next_step": "atl_execute"},
     "use_cases": [
       "search for current information through an eligible provider",
       "extract structured data or fields through an eligible provider",
@@ -53,47 +40,8 @@
       "optimize a route for reliability, latency, cost, region, or policy",
       "choose and execute a provider without caller-side provider selection"
     ],
-    "keywords": [
-      "search",
-      "web search",
-      "extract",
-      "structured extraction",
-      "summarize",
-      "summarization",
-      "translate",
-      "translation",
-      "classify",
-      "classification",
-      "find provider",
-      "find a provider",
-      "find a tool",
-      "find MCP server",
-      "find an MCP server",
-      "AI provider routing",
-      "MCP routing",
-      "MCP server discovery",
-      "tool discovery",
-      "provider selection",
-      "provider failed",
-      "current provider failed",
-      "find fallback",
-      "fallback provider",
-      "cheaper provider",
-      "faster provider",
-      "more reliable provider",
-      "low latency provider",
-      "low cost provider",
-      "reliable provider",
-      "alternative provider",
-      "execute this task",
-      "execution route",
-      "routing",
-      "execution",
-      "automatic outcome",
-      "fallback",
-      "failover"
-    ],
-    "host_install_surfaces": ["Claude Code", "Codex", "Cursor", "VS Code MCP", "GitHub Copilot Agent", "Windsurf", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "PydanticAI", "Anthropic Claude API MCP Connector", "Official MCP Registry"],
+    "keywords": ["search", "web search", "extract", "structured extraction", "summarize", "summarization", "translate", "translation", "classify", "classification", "find provider", "find a provider", "find a tool", "find MCP server", "find an MCP server", "AI provider routing", "MCP routing", "MCP server discovery", "tool discovery", "provider selection", "provider failed", "current provider failed", "find fallback", "fallback provider", "cheaper provider", "faster provider", "more reliable provider", "low latency provider", "low cost provider", "reliable provider", "alternative provider", "execute this task", "execution route", "routing", "execution", "automatic outcome", "fallback", "failover"],
+    "host_install_surfaces": ["Claude Code", "Codex", "Cursor", "VS Code MCP", "GitHub Copilot Agent", "Windsurf", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "PydanticAI", "LangChain", "LangGraph", "Anthropic Claude API MCP Connector", "Official MCP Registry"],
     "machine_signal_version": "0.4",
     "machine_signal_ref": "/.well-known/atl-machine-identity.json"
   }
