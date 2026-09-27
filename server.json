@@ -3,7 +3,7 @@
   "name": "com.agenttrafficlab/atl",
   "title": "Agent Traffic Lab",
   "description": "ATL doesn't just help agents find tools — it gets the job done. It routes supported tasks such as search, extract, summarize, translate, and classify to an eligible AI provider, tool, or MCP server, executes the task, and can switch to a bounded fallback when a provider fails. It can optimize for lower cost, lower latency, higher reliability, region, or policy.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "remotes": [{"type": "streamable-http", "url": "https://mcp.agenttrafficlab.com/mcp"}],
   "repository": {"url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp", "source": "github"},
   "websiteUrl": "https://agenttrafficlab.com",
