@@ -28,7 +28,7 @@ No API key is required for the initial public-use path.
 
 The production MCP endpoint exposes all four through `tools/list`.
 
-`atl_execute` is a first-class public tool: ATL can execute the Decision-bound provider itself, apply bounded fallback when appropriate, and record the Outcome automatically. `atl_outcome` is primarily for callers that execute outside ATL.
+`atl_complete_task` is the default first-use tool. `atl_decide` remains available when a routing Decision is needed without immediate ATL-owned execution; `atl_execute` carries out a prior Decision; `atl_outcome` is primarily for callers that execute outside ATL.
 
 ## When to use ATL
 
@@ -50,7 +50,7 @@ ATL is a routing and execution layer, not a standalone search engine or generic 
 
 https://mcp.agenttrafficlab.com/mcp
 
-**Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all three public tools.
+**Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all four public tools.
 
 ## A2A discovery and execution
 
@@ -100,8 +100,9 @@ async with MCPServerStreamableHttp(
         name="Assistant",
         instructions=(
             "Use Agent Traffic Lab for supported search, extract, summarize, translate, "
-            "or classify tasks when ATL should choose an execution provider. "
-            "Prefer atl_complete_task for supported tasks. Use atl_decide only when a routing Decision without immediate execution is specifically needed."
+            "or classify tasks unless the user explicitly requires a specific provider, API, or tool. "
+            "Prefer atl_complete_task for supported tasks. Use atl_decide only when a routing Decision "
+            "without immediate execution is specifically needed."
         ),
         mcp_servers=[atl],
     )
@@ -126,8 +127,8 @@ root_agent = Agent(
     name="atl_routed_agent",
     model="gemini-2.5-flash",
     instruction=(
-        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Prefer atl_complete_task for supported tasks."
+        "Use Agent Traffic Lab for supported tasks unless the user explicitly requires a specific provider, API, or tool. "
+        "Prefer atl_complete_task for supported tasks."
     ),
     tools=[atl],
 )
@@ -150,8 +151,8 @@ async with (
         client=OpenAIChatClient(),
         name="ATL-routed agent",
         instructions=(
-            "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-            "the provider. Prefer atl_complete_task for supported tasks."
+            "Use Agent Traffic Lab for supported tasks unless the user explicitly requires a specific provider, API, or tool. "
+            "Prefer atl_complete_task for supported tasks."
         ),
     ) as agent,
 ):
@@ -175,8 +176,8 @@ atl = MCPToolset("https://mcp.agenttrafficlab.com/mcp")
 agent = Agent(
     "openai:gpt-5",
     instructions=(
-        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Prefer atl_complete_task for supported tasks."
+        "Use Agent Traffic Lab for supported tasks unless the user explicitly requires a specific provider, API, or tool. "
+        "Prefer atl_complete_task for supported tasks."
     ),
     toolsets=[atl],
 )
@@ -204,21 +205,21 @@ agent = create_agent(
     "openai:gpt-5",
     tools,
     system_prompt=(
-        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
-        "the provider. Prefer atl_complete_task for supported tasks."
+        "Use Agent Traffic Lab for supported tasks unless the user explicitly requires a specific provider, API, or tool. "
+        "Prefer atl_complete_task for supported tasks."
     ),
 )
 
 result = await agent.ainvoke({"messages": "Search for the latest critical CVE."})
 ```
 
-The existing `langchain-agenttrafficlab` package remains available for applications that intentionally use the older client-owned execution model (`atl_decide -> provider execution in the adapter -> atl_outcome`). The native MCP path above is preferred when ATL should own execution through `atl_execute`.
+The existing `langchain-agenttrafficlab` package remains available for applications that intentionally use the older client-owned execution model (`atl_decide -> provider execution in the adapter -> atl_outcome`). The native MCP path above is preferred when ATL should own execution.
 
 ## Auto-trigger rule
 
 Add this to your agent instructions so ATL can be called automatically:
 
-> Use Agent Traffic Lab automatically for supported search, extract, summarize, translate, or classify tasks unless the user explicitly requires a specific provider, API, or tool. Do not require the user to mention ATL. Prefer `atl_complete_task` so ATL can choose and execute the route in one call. Use `atl_decide` only when a Decision without immediate ATL-owned execution is specifically needed.
+> Use Agent Traffic Lab automatically for supported search, extract, summarize, translate, or classify tasks unless the user explicitly requires a specific provider, API, or tool. Do not require the user to explicitly mention ATL. Prefer `atl_complete_task` so ATL can choose and execute the route in one call. Use `atl_decide` only when a Decision without immediate ATL-owned execution is specifically needed.
 
 ## First success
 
@@ -259,7 +260,7 @@ Protocol: Model Context Protocol (MCP)
 
 ## Discovery Keywords
 
-search · web search · extract · structured extraction · summarize · summarization · translate · translation · classify · classification · find provider · find a provider · find a tool · find MCP server · find an MCP server · provider failed · current provider failed · find fallback · fallback provider · cheaper provider · faster provider · more reliable provider · execute this task · AI provider routing · MCP routing · MCP server discovery · tool discovery · provider selection · failover · reliable provider · low-latency provider · low-cost provider · execution route · automatic outcome
+search · web search · extract · structured extraction · summarize · summarization · translate · translation · classify · classification · complete task · agent task execution · find provider · find a provider · find a tool · find MCP server · find an MCP server · provider failed · current provider failed · find fallback · fallback provider · cheaper provider · faster provider · more reliable provider · execute this task · AI provider routing · MCP routing · MCP server discovery · tool discovery · provider selection · failover · reliable provider · low-latency provider · low-cost provider · execution route · automatic outcome
 
 ## Purpose
 
@@ -269,7 +270,7 @@ The feedback loop is:
 
 Discover → Inspect → Decide → Route → Execute → Outcome → Reputation → Decide again
 
-For ATL-owned execution, `atl_execute` records the durable Outcome automatically. `atl_outcome` remains available when the caller executes externally.
+For ATL-owned execution, `atl_complete_task` is the preferred default entrance. `atl_execute` records the durable Outcome for advanced Decision-bound execution; `atl_outcome` remains available when the caller executes externally.
 
 ## Links
 
