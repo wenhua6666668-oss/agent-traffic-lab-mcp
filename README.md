@@ -76,7 +76,7 @@ Provider identity remains ATL-owned on `atl_execute`; callers cannot override th
 
 ## Install in agent clients
 
-Client-specific install instructions are available for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, and Anthropic Claude API MCP Connector:
+Client-specific install instructions are available for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, PydanticAI, and Anthropic Claude API MCP Connector:
 
 https://agenttrafficlab.com/install
 
@@ -184,6 +184,29 @@ async with (
 ```
 
 Microsoft Agent Framework also supports A2A remote agents, so ATL's public Agent Card can be used when an application prefers an A2A integration instead of MCP.
+
+## PydanticAI
+
+PydanticAI can connect to ATL directly as a remote Streamable HTTP MCP toolset; no ATL-specific adapter is required.
+
+```python
+from pydantic_ai import Agent
+from pydantic_ai.mcp import MCPToolset
+
+atl = MCPToolset("https://mcp.agenttrafficlab.com/mcp")
+agent = Agent(
+    "openai:gpt-5",
+    instructions=(
+        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
+        "the provider. Start with atl_decide and follow next_step to atl_execute."
+    ),
+    toolsets=[atl],
+)
+
+result = await agent.run("Search for the latest critical CVE.")
+```
+
+PydanticAI also provides a higher-level `MCP` capability and can opt into provider-native MCP when the selected model provider supports it.
 
 ## Auto-trigger rule
 
