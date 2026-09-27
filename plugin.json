@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agent-traffic-lab",
+  "version": "0.1.0",
+  "description": "Connect an agent to Agent Traffic Lab once, then route and execute supported search, extract, summarize, translate, and classify tasks through eligible providers with bounded fallback.",
+  "author": {
+    "name": "Agent Traffic Lab",
+    "url": "https://agenttrafficlab.com"
+  },
+  "homepage": "https://agenttrafficlab.com/install",
+  "repository": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+  "keywords": [
+    "agent",
+    "mcp",
+    "routing",
+    "execution",
+    "provider-discovery",
+    "fallback"
+  ]
+}
