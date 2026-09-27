@@ -9,6 +9,8 @@
   },
   "homepage": "https://agenttrafficlab.com/install",
   "repository": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
   "keywords": [
     "agent",
     "mcp",
