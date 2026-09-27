@@ -76,7 +76,7 @@ Provider identity remains ATL-owned on `atl_execute`; callers cannot override th
 
 ## Install in agent clients
 
-Client-specific install instructions are available for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, PydanticAI, and Anthropic Claude API MCP Connector:
+Client-specific install instructions are available for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, PydanticAI, LangChain / LangGraph, and Anthropic Claude API MCP Connector:
 
 https://agenttrafficlab.com/install
 
@@ -106,29 +106,6 @@ async with MCPServerStreamableHttp(
     )
     result = await Runner.run(agent, "Search for the latest critical CVE.")
 ```
-
-JavaScript / TypeScript:
-
-```javascript
-import { Agent, run, MCPServerStreamableHttp } from "@openai/agents";
-
-const atl = new MCPServerStreamableHttp({
-  url: "https://mcp.agenttrafficlab.com/mcp",
-  name: "Agent Traffic Lab",
-});
-
-await atl.connect();
-const agent = new Agent({
-  name: "Assistant",
-  instructions: "Use ATL for supported tasks when ATL should choose and execute the provider. Start with atl_decide and follow next_step to atl_execute.",
-  mcpServers: [atl],
-});
-
-const result = await run(agent, "Translate this text into Spanish.");
-await atl.close();
-```
-
-This path is valuable because the Agents SDK can discover ATL's live MCP tools directly and let the model invoke the canonical `atl_decide -> atl_execute` flow.
 
 ## Google Agent Development Kit (ADK)
 
@@ -206,7 +183,35 @@ agent = Agent(
 result = await agent.run("Search for the latest critical CVE.")
 ```
 
-PydanticAI also provides a higher-level `MCP` capability and can opt into provider-native MCP when the selected model provider supports it.
+## LangChain / LangGraph
+
+For new integrations that should produce ATL-owned execution and automatic durable Outcomes, prefer LangChain's official remote MCP adapter and connect directly to ATL.
+
+```python
+from langchain.agents import create_agent
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "atl": {
+        "transport": "streamable_http",
+        "url": "https://mcp.agenttrafficlab.com/mcp",
+    }
+})
+
+tools = await client.get_tools()
+agent = create_agent(
+    "openai:gpt-5",
+    tools,
+    system_prompt=(
+        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
+        "the provider. Start with atl_decide and follow next_step to atl_execute."
+    ),
+)
+
+result = await agent.ainvoke({"messages": "Search for the latest critical CVE."})
+```
+
+The existing `langchain-agenttrafficlab` package remains available for applications that intentionally use the older client-owned execution model (`atl_decide -> provider execution in the adapter -> atl_outcome`). The native MCP path above is preferred when ATL should own execution through `atl_execute`.
 
 ## Auto-trigger rule
 
