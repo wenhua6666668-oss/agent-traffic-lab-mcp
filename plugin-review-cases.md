@@ -6,23 +6,23 @@ These materials are intended for OpenAI Plugin Directory review and manual verif
 
 1. **Search**
    - User: `Search for the latest critical CVE.`
-   - Expected: ATL is eligible to auto-trigger. The agent should call `atl_decide` with the task, then follow a successful Decision's `next_step` to `atl_execute`.
+   - Expected: ATL is eligible to auto-trigger. The agent should prefer `atl_complete_task` with the user's task; ATL chooses and executes an eligible route.
 
 2. **Extract**
    - User: `Extract the product name, price, and availability from this page.`
-   - Expected: ATL may infer `extract`, call `atl_decide`, then `atl_execute` if ATL owns execution.
+   - Expected: ATL may infer `extract` and call `atl_complete_task`.
 
 3. **Summarize**
    - User: `Summarize this support ticket for handoff.`
-   - Expected: ATL may infer `summarize`, call `atl_decide`, then `atl_execute`.
+   - Expected: ATL may infer `summarize` and call `atl_complete_task`.
 
 4. **Translate**
    - User: `Translate this paragraph into Spanish.`
-   - Expected: ATL may infer `translate`, call `atl_decide`, then `atl_execute`.
+   - Expected: ATL may infer `translate` and call `atl_complete_task`.
 
 5. **Classify / fallback routing**
    - User: `Classify this customer message and use a reliable alternative if the first provider is unavailable.`
-   - Expected: ATL may infer `classify`; routing may consider reliability and bounded fallback.
+   - Expected: ATL may infer `classify`; `atl_complete_task` may use bounded fallback when appropriate.
 
 ## Negative cases
 
@@ -38,6 +38,11 @@ These materials are intended for OpenAI Plugin Directory review and manual verif
    - User: `Call this already-selected API directly with these credentials.`
    - Expected: Do not route through ATL merely to re-select a provider. Use the already-selected integration, and never expose credentials to ATL unless explicitly appropriate.
 
+## Advanced routing-only case
+
+- User: `Choose an eligible provider for this task, but do not execute it yet.`
+- Expected: Use `atl_decide`. If execution is later requested through ATL, follow the Decision's machine-readable `next_step` to `atl_execute`.
+
 ## Starter prompts
 
 - `Search for the latest critical CVE.`
@@ -47,6 +52,11 @@ These materials are intended for OpenAI Plugin Directory review and manual verif
 - `Classify this support ticket and use bounded fallback if needed.`
 
 ## Tool annotation justifications
+
+### `atl_complete_task`
+- `readOnlyHint: false` — the tool executes an eligible external provider/tool route and records execution state/Outcome evidence.
+- `destructiveHint: false` — the supported V1 surface is limited to search, extract, summarize, translate, and classify; it does not delete or overwrite user data, send messages, make purchases, revoke access, or perform other irreversible actions.
+- `openWorldHint: true` — execution may call an eligible third-party provider, tool, or MCP server on the public internet or another open-ended external service.
 
 ### `atl_decide`
 - `readOnlyHint: true` — the tool computes and returns a routing Decision. It does not itself execute the selected provider or mutate user data.
@@ -65,7 +75,7 @@ These materials are intended for OpenAI Plugin Directory review and manual verif
 
 ## Release notes
 
-Initial public OpenAI Plugin submission for Agent Traffic Lab. The plugin connects ChatGPT and Codex to ATL's production remote MCP endpoint and includes an execution-routing Skill. ATL supports a safe V1 surface for search, extract, summarize, translate, and classify tasks. The normal flow is `atl_decide -> atl_execute -> Outcome`, with bounded fallback when appropriate. The production MCP exposes explicit safety annotations for every public tool.
+Initial public OpenAI Plugin submission for Agent Traffic Lab. The plugin connects ChatGPT and Codex to ATL's production remote MCP endpoint and includes an execution-routing Skill. ATL supports a safe V1 surface for search, extract, summarize, translate, and classify tasks. The default first-use flow is `atl_complete_task -> provider/tool -> durable Outcome`; advanced routing-only use remains available through `atl_decide`, with `atl_execute` for later ATL-owned execution. The production MCP exposes explicit safety annotations for every public tool and a structured output schema for `atl_complete_task`.
 
 ## Demo recording script
 
@@ -74,7 +84,7 @@ Record a short screen capture that shows the plugin installed in a supported Ope
 1. Show the ATL plugin listing or installed plugin state.
 2. Ask: `Search for the latest critical CVE.`
 3. Show that ATL is selected without requiring the user to name a provider.
-4. Show the `atl_decide` step and the follow-on `atl_execute` step if the UI exposes tool activity.
+4. Show the `atl_complete_task` tool call if the UI exposes tool activity.
 5. Show the final useful result.
 6. Run one additional supported case such as summarize or translate.
 7. Run one negative case such as `Calculate 19 * 27.` and show that ATL is not invoked.
