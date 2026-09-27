@@ -3,17 +3,24 @@
   "maintainers": [
     "wenhua6666668-oss"
   ],
+  "name": "Agent Traffic Lab",
+  "description": "Give ATL a supported task and get the result back. For search, extract, summarize, translate, and classify tasks, ATL selects an eligible provider or tool, executes the task, may use bounded fallback, and records the Outcome when ATL owns execution. Prefer atl_complete_task as the default task-in/result-out entrance.",
   "keywords": [
-    "agent-traffic-lab",
+    "agent-task-execution",
+    "complete-task",
+    "task-in-result-out",
+    "search",
+    "web-search",
+    "research",
+    "extract",
+    "content-extraction",
+    "summarize",
+    "translation",
+    "classify",
     "mcp",
     "agent-routing",
-    "tool-discovery",
     "provider-routing",
-    "execution",
-    "search",
-    "extract",
-    "summarize",
-    "translate",
-    "classify"
+    "bounded-fallback",
+    "execution"
   ]
 }
