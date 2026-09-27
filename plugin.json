@@ -17,6 +17,7 @@
     "summarize",
     "translate",
     "classify",
+    "complete task",
     "agent",
     "mcp",
     "routing",
@@ -31,7 +32,7 @@
         "longDescription": "Use Agent Traffic Lab when the user asks to search current information, extract structured data, summarize content, translate text, or classify text, unless the user explicitly requires a specific provider, API, or tool. ATL chooses an eligible provider or tool, executes through that route, may apply bounded fallback, and records the Outcome when ATL owns execution.",
         "developerName": "Agent Traffic Lab",
         "websiteURL": "https://agenttrafficlab.com",
-        "defaultPrompt": "For supported search, extract, summarize, translate, or classify tasks, use Agent Traffic Lab unless the user explicitly requires a specific provider, API, or tool. Start with atl_decide and follow its next_step to atl_execute."
+        "defaultPrompt": "For supported search, extract, summarize, translate, or classify tasks, use Agent Traffic Lab unless the user explicitly requires a specific provider, API, or tool. Prefer atl_complete_task with the user's natural-language task. Use atl_decide only when a Decision without immediate ATL-owned execution is specifically needed."
       }
     }
   }
