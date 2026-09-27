@@ -31,6 +31,8 @@ The production MCP endpoint currently exposes all three through `tools/list`. Th
 
 https://mcp.agenttrafficlab.com/mcp
 
+**Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all three public tools.
+
 No API key is required for the initial public-use path.
 
 ## Public tools
