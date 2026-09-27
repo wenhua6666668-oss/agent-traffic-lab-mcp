@@ -2,38 +2,55 @@
 
 [![Smithery badge](https://smithery.ai/badge/wenhua6666668/agent-traffic-lab)](https://smithery.ai/servers/wenhua6666668/agent-traffic-lab)
 
-ATL doesn’t just help agents find tools — it gets the job done. It finds and chooses the right AI provider, tool, or MCP server, executes the task, and switches to a fallback when a provider fails. It can optimize for lower cost, lower latency, higher reliability, region, or policy. Less wasted calls, fewer retries, lower API costs. Faster, cheaper, more reliable.
+ATL doesn’t just help agents find tools — it gets the job done. Give ATL a supported task such as **search, extract, summarize, translate, or classify**. ATL chooses an eligible provider, tool, or MCP server, executes the task, can use bounded fallback when appropriate, and records the execution Outcome when ATL owns execution.
+
+## Fastest first use
+
+Connect the canonical remote MCP endpoint:
+
+`https://mcp.agenttrafficlab.com/mcp`
+
+Then start with one natural-language argument:
+
+`atl_decide({"task": "search for the latest critical CVE"})`
+
+ATL can infer the safe V1 capability when possible. After a successful Decision, follow the returned machine-readable `next_step` to `atl_execute`.
+
+Default loop:
+
+`ordinary task -> atl_decide(task) -> next_step -> atl_execute -> real provider/tool -> automatic durable Outcome`
+
+No API key is required for the initial public-use path.
 
 ## Live discovery status
 
 **3 public MCP tools are live:** `atl_decide`, `atl_execute`, and `atl_outcome`.
 
-The production MCP endpoint currently exposes all three through `tools/list`. The intended default flow is:
-
-`atl_decide -> atl_execute -> real provider/tool -> automatic durable Outcome`
+The production MCP endpoint exposes all three through `tools/list`.
 
 `atl_execute` is a first-class public tool: ATL can execute the Decision-bound provider itself, apply bounded fallback when appropriate, and record the Outcome automatically. `atl_outcome` is primarily for callers that execute outside ATL.
 
 ## When to use ATL
 
-- Find a provider for this task.
-- Find an MCP server or tool for this task.
-- The current provider failed; find a fallback.
-- Use a cheaper provider.
-- Use a faster provider.
-- Use a more reliable provider.
-- Execute this task through the ATL-selected provider.
+- Search for current information through an eligible provider.
+- Extract structured data or fields through an eligible provider.
+- Summarize content through an eligible provider.
+- Translate text through an eligible provider.
+- Classify text or a support ticket through an eligible provider.
+- Find a provider, MCP server, or tool for a task.
+- The current provider failed; find and use a bounded fallback.
+- Use a cheaper, faster, or more reliable eligible provider.
 - Choose between multiple AI providers or MCP routes.
 - Prefer a route based on reliability, latency, cost, region, or policy.
 - Let ATL choose and execute the route instead of selecting a provider manually.
+
+ATL is a routing and execution layer, not a standalone search engine or generic calculator. Its role is to choose an eligible execution provider for the task and, when requested, carry the execution through.
 
 ## Public MCP Endpoint
 
 https://mcp.agenttrafficlab.com/mcp
 
 **Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all three public tools.
-
-No API key is required for the initial public-use path.
 
 ## A2A discovery and execution
 
@@ -51,7 +68,7 @@ Through A2A, ATL is not only a provider-selection directory. It can choose an el
 
 ## Public tools
 
-- `atl_decide` — find and choose an eligible provider, tool, or MCP route when the provider is unknown; use it for provider discovery, fallback, cheaper/faster/more-reliable alternatives, or a failed current provider.
+- `atl_decide` — route a supported natural-language task to an eligible provider, tool, or MCP route. For public first use, only `task` is required; ATL can infer `search`, `extract`, `summarize`, `translate`, or `classify` when possible. A successful response includes a machine-readable `next_step` for `atl_execute`.
 - `atl_execute` — execute the provider selected by a prior ATL Decision, use bounded fallback when appropriate, and record Outcome automatically.
 - `atl_outcome` — report the real result when execution happens outside ATL.
 
@@ -59,7 +76,7 @@ Provider identity remains ATL-owned on `atl_execute`; callers cannot override th
 
 ## Install in agent clients
 
-Client-specific install instructions for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, and Microsoft Agent Framework:
+Client-specific install instructions are available for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, Microsoft Agent Framework, and Anthropic Claude API MCP Connector:
 
 https://agenttrafficlab.com/install
 
@@ -81,13 +98,13 @@ async with MCPServerStreamableHttp(
     agent = Agent(
         name="Assistant",
         instructions=(
-            "Use Agent Traffic Lab when the task needs a provider, MCP tool, "
-            "execution route, fallback, or a cheaper/faster/more reliable option. "
-            "Prefer atl_decide, then atl_execute when ATL should own execution."
+            "Use Agent Traffic Lab for supported search, extract, summarize, translate, "
+            "or classify tasks when ATL should choose an execution provider. "
+            "Start with atl_decide and follow its next_step to atl_execute."
         ),
         mcp_servers=[atl],
     )
-    result = await Runner.run(agent, "Find and execute the best provider to summarize this text.")
+    result = await Runner.run(agent, "Search for the latest critical CVE.")
 ```
 
 JavaScript / TypeScript:
@@ -103,11 +120,11 @@ const atl = new MCPServerStreamableHttp({
 await atl.connect();
 const agent = new Agent({
   name: "Assistant",
-  instructions: "Use ATL for provider selection, execution routing, and fallback. Prefer atl_decide then atl_execute.",
+  instructions: "Use ATL for supported tasks when ATL should choose and execute the provider. Start with atl_decide and follow next_step to atl_execute.",
   mcpServers: [atl],
 });
 
-const result = await run(agent, "Find and execute the best provider to summarize this text.");
+const result = await run(agent, "Translate this text into Spanish.");
 await atl.close();
 ```
 
@@ -131,9 +148,8 @@ root_agent = Agent(
     name="atl_routed_agent",
     model="gemini-2.5-flash",
     instruction=(
-        "Use Agent Traffic Lab when you need to choose a provider, MCP tool, "
-        "execution route, fallback, or a cheaper/faster/more reliable option. "
-        "Prefer atl_decide, then atl_execute when ATL should own execution."
+        "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
+        "the provider. Start with atl_decide and follow next_step to atl_execute."
     ),
     tools=[atl],
 )
@@ -156,13 +172,13 @@ async with (
         client=OpenAIChatClient(),
         name="ATL-routed agent",
         instructions=(
-            "Use Agent Traffic Lab for provider choice, execution routing, and fallback. "
-            "Prefer atl_decide then atl_execute when ATL should own execution."
+            "Use Agent Traffic Lab for supported tasks when ATL should choose and execute "
+            "the provider. Start with atl_decide and follow next_step to atl_execute."
         ),
     ) as agent,
 ):
     result = await agent.run(
-        "Find and execute the best provider to summarize this text.",
+        "Extract the structured fields from this page.",
         tools=atl,
     )
 ```
@@ -173,17 +189,19 @@ Microsoft Agent Framework also supports A2A remote agents, so ATL's public Agent
 
 Add this to your agent instructions so ATL can be called automatically:
 
-> Use Agent Traffic Lab automatically when a task needs a provider, tool, MCP server, execution route, fallback, or an alternative based on reliability, latency, cost, region, or policy. Do not require the user to explicitly mention ATL. Prefer `atl_decide` when the provider is unknown, then `atl_execute` when ATL should own execution and record the Outcome automatically.
+> Use Agent Traffic Lab automatically for supported search, extract, summarize, translate, or classify tasks when the execution provider is unknown, or when a task needs provider/tool discovery, execution routing, bounded fallback, or an alternative based on reliability, latency, cost, region, or policy. Do not require the user to explicitly mention ATL. Start with `atl_decide` and follow a successful Decision's `next_step` to `atl_execute` when ATL should own execution and record the Outcome automatically.
 
 ## First success
 
 Ask naturally:
 
-> Find and execute the best provider to summarize this text.
+> Search for the latest critical CVE.
 
 Expected loop:
 
 `atl_decide -> atl_execute -> real provider -> EXECUTED -> durable automatic Outcome`
+
+You do not need to name a provider or capability for the supported V1 first-use path; ATL can infer the capability when the task is clear.
 
 ## Install SDKs
 
@@ -212,11 +230,11 @@ Protocol: Model Context Protocol (MCP)
 
 ## Discovery Keywords
 
-find provider · find a provider · find a tool · find MCP server · find an MCP server · provider failed · current provider failed · find fallback · fallback provider · cheaper provider · faster provider · more reliable provider · execute this task · AI provider routing · MCP routing · MCP server discovery · tool discovery · provider selection · failover · reliable provider · low-latency provider · low-cost provider · execution route · automatic outcome
+search · web search · extract · structured extraction · summarize · summarization · translate · translation · classify · classification · find provider · find a provider · find a tool · find MCP server · find an MCP server · provider failed · current provider failed · find fallback · fallback provider · cheaper provider · faster provider · more reliable provider · execute this task · AI provider routing · MCP routing · MCP server discovery · tool discovery · provider selection · failover · reliable provider · low-latency provider · low-cost provider · execution route · automatic outcome
 
 ## Purpose
 
-ATL provides a neutral machine-service routing layer designed to help agents discover, evaluate, route to, execute through, and learn from service providers.
+ATL provides a neutral machine-service routing and execution layer designed to help agents route supported tasks to eligible providers, execute through those providers, apply bounded fallback when appropriate, and learn from real Outcome evidence.
 
 The feedback loop is:
 
