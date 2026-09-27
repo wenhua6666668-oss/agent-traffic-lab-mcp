@@ -4,6 +4,16 @@
 
 ATL doesn’t just help agents find tools — it gets the job done. It finds and chooses the right AI provider, tool, or MCP server, executes the task, and switches to a fallback when a provider fails. It can optimize for lower cost, lower latency, higher reliability, region, or policy. Less wasted calls, fewer retries, lower API costs. Faster, cheaper, more reliable.
 
+## Live discovery status
+
+**3 public MCP tools are live:** `atl_decide`, `atl_execute`, and `atl_outcome`.
+
+The production MCP endpoint currently exposes all three through `tools/list`. The intended default flow is:
+
+`atl_decide -> atl_execute -> real provider/tool -> automatic durable Outcome`
+
+`atl_execute` is a first-class public tool: ATL can execute the Decision-bound provider itself, apply bounded fallback when appropriate, and record the Outcome automatically. `atl_outcome` is primarily for callers that execute outside ATL.
+
 ## When to use ATL
 
 - Find a provider for this task.
