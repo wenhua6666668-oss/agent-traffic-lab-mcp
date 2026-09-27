@@ -1,6 +1,6 @@
-# ATL Plugin Review Test Cases
+# ATL Plugin Review Materials
 
-These cases are intended for directory review and manual verification of the ATL plugin behavior.
+These materials are intended for OpenAI Plugin Directory review and manual verification of Agent Traffic Lab (ATL).
 
 ## Positive cases
 
@@ -45,3 +45,38 @@ These cases are intended for directory review and manual verification of the ATL
 - `Extract structured fields from this page.`
 - `Translate this into Spanish using an eligible provider.`
 - `Classify this support ticket and use bounded fallback if needed.`
+
+## Tool annotation justifications
+
+### `atl_decide`
+- `readOnlyHint: true` — the tool computes and returns a routing Decision. It does not itself execute the selected provider or mutate user data.
+- `destructiveHint: false` — it does not delete, overwrite, send, revoke, or otherwise cause an irreversible user-facing action.
+- `openWorldHint: true` — routing may inspect open-ended provider/tool/MCP availability and eligibility outside a bounded private workspace.
+
+### `atl_execute`
+- `readOnlyHint: false` — the tool executes the provider bound to an ATL Decision and records the resulting Outcome, so it changes execution state and can trigger external provider work.
+- `destructiveHint: false` — ATL's supported V1 execution surface is limited to search, extract, summarize, translate, and classify; it does not delete or overwrite user data, send messages, make purchases, revoke access, or perform other irreversible actions.
+- `openWorldHint: true` — execution may call an eligible third-party provider, tool, or MCP server on the public internet or another open-ended external service.
+
+### `atl_outcome`
+- `readOnlyHint: false` — the tool records an Outcome when execution occurred outside ATL, so it writes service state used for routing/reputation evidence.
+- `destructiveHint: false` — it records execution evidence and does not delete, overwrite, send, revoke, purchase, or perform other irreversible user actions.
+- `openWorldHint: false` — it records the caller-provided execution result inside ATL and does not itself contact an open-ended external provider.
+
+## Release notes
+
+Initial public OpenAI Plugin submission for Agent Traffic Lab. The plugin connects ChatGPT and Codex to ATL's production remote MCP endpoint and includes an execution-routing Skill. ATL supports a safe V1 surface for search, extract, summarize, translate, and classify tasks. The normal flow is `atl_decide -> atl_execute -> Outcome`, with bounded fallback when appropriate. The production MCP exposes explicit safety annotations for every public tool.
+
+## Demo recording script
+
+Record a short screen capture that shows the plugin installed in a supported OpenAI surface and demonstrates the main workflow without exposing credentials or private data:
+
+1. Show the ATL plugin listing or installed plugin state.
+2. Ask: `Search for the latest critical CVE.`
+3. Show that ATL is selected without requiring the user to name a provider.
+4. Show the `atl_decide` step and the follow-on `atl_execute` step if the UI exposes tool activity.
+5. Show the final useful result.
+6. Run one additional supported case such as summarize or translate.
+7. Run one negative case such as `Calculate 19 * 27.` and show that ATL is not invoked.
+
+Upload the resulting recording to an HTTPS URL accepted by the OpenAI submission portal and use that URL as the demo-recording URL.
