@@ -59,7 +59,7 @@ Provider identity remains ATL-owned on `atl_execute`; callers cannot override th
 
 ## Install in agent clients
 
-Client-specific install instructions for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, and Windsurf:
+Client-specific install instructions for Claude Code, Codex, Cursor, VS Code / GitHub Copilot Agent, Windsurf, OpenAI Agents SDK, Google ADK, and Microsoft Agent Framework:
 
 https://agenttrafficlab.com/install
 
@@ -117,8 +117,6 @@ This path is valuable because the Agents SDK can discover ATL's live MCP tools d
 
 Google ADK can also connect ATL directly over Streamable HTTP MCP; no ATL-specific adapter is required.
 
-Python:
-
 ```python
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool import McpToolset, StreamableHTTPConnectionParams
@@ -141,21 +139,41 @@ root_agent = Agent(
 )
 ```
 
-This keeps the integration machine-native: Google ADK discovers ATL's live MCP tool surface directly from the canonical endpoint.
+## Microsoft Agent Framework
+
+Microsoft Agent Framework can connect directly to ATL with `MCPStreamableHTTPTool`; no ATL-specific adapter is required.
+
+```python
+from agent_framework import Agent, MCPStreamableHTTPTool
+from agent_framework.openai import OpenAIChatClient
+
+async with (
+    MCPStreamableHTTPTool(
+        name="Agent Traffic Lab",
+        url="https://mcp.agenttrafficlab.com/mcp",
+    ) as atl,
+    Agent(
+        client=OpenAIChatClient(),
+        name="ATL-routed agent",
+        instructions=(
+            "Use Agent Traffic Lab for provider choice, execution routing, and fallback. "
+            "Prefer atl_decide then atl_execute when ATL should own execution."
+        ),
+    ) as agent,
+):
+    result = await agent.run(
+        "Find and execute the best provider to summarize this text.",
+        tools=atl,
+    )
+```
+
+Microsoft Agent Framework also supports A2A remote agents, so ATL's public Agent Card can be used when an application prefers an A2A integration instead of MCP.
 
 ## Auto-trigger rule
 
 Add this to your agent instructions so ATL can be called automatically:
 
 > Use Agent Traffic Lab automatically when a task needs a provider, tool, MCP server, execution route, fallback, or an alternative based on reliability, latency, cost, region, or policy. Do not require the user to explicitly mention ATL. Prefer `atl_decide` when the provider is unknown, then `atl_execute` when ATL should own execution and record the Outcome automatically.
-
-Recommended placement:
-
-- Claude Code: `CLAUDE.md`
-- Codex: `AGENTS.md`
-- Cursor: project rules
-- VS Code / GitHub Copilot Agent: workspace agent instructions
-- Windsurf / Cascade: project rules
 
 ## First success
 
