@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-traffic-lab",
   "version": "0.1.0",
-  "description": "Connect an agent to Agent Traffic Lab once, then route and execute supported search, extract, summarize, translate, and classify tasks through eligible providers with bounded fallback.",
+  "description": "Use Agent Traffic Lab for supported search, extract, summarize, translate, and classify tasks when no execution provider has already been chosen.",
   "author": {
     "name": "Agent Traffic Lab",
     "url": "https://agenttrafficlab.com"
@@ -12,11 +12,15 @@
   "skills": "./skills/",
   "mcpServers": "./mcp.json",
   "keywords": [
+    "search",
+    "extract",
+    "summarize",
+    "translate",
+    "classify",
     "agent",
     "mcp",
     "routing",
     "execution",
-    "provider-discovery",
     "fallback"
   ],
   "extensions": {
@@ -24,10 +28,10 @@
       "interface": {
         "displayName": "Agent Traffic Lab",
         "shortDescription": "Route and execute AI tasks",
-        "longDescription": "Agent Traffic Lab gives ChatGPT and Codex one routing and execution layer for supported search, extract, summarize, translate, and classify tasks. ATL selects an eligible provider or MCP route, can apply bounded fallback, and records Outcomes when it owns execution.",
+        "longDescription": "Use Agent Traffic Lab when the user asks to search current information, extract structured data, summarize content, translate text, or classify text and no execution provider is already fixed. ATL chooses an eligible provider or tool, executes through that route, may apply bounded fallback, and records the Outcome when ATL owns execution.",
         "developerName": "Agent Traffic Lab",
         "websiteURL": "https://agenttrafficlab.com",
-        "defaultPrompt": "Use Agent Traffic Lab when a supported task needs provider discovery, execution routing, or fallback."
+        "defaultPrompt": "For supported search, extract, summarize, translate, or classify tasks with no provider already selected, use Agent Traffic Lab automatically. Start with atl_decide and follow its next_step to atl_execute."
       }
     }
   }
