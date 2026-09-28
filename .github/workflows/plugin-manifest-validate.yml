@@ -1,0 +1,48 @@
+name: Validate Plugin Manifests
+
+on:
+  push:
+    paths:
+      - "plugin.json"
+      - "mcp.json"
+      - ".cursor-plugin/plugin.json"
+      - ".cursor-plugin/mcp.json"
+      - ".github/workflows/plugin-manifest-validate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON and schemas
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet jsonschema requests
+          python - <<'PY'
+          import json, requests
+          from jsonschema import Draft7Validator
+
+          def load(path):
+              with open(path, encoding='utf-8') as f:
+                  return json.load(f)
+
+          def schema(url):
+              r=requests.get(url, timeout=20)
+              r.raise_for_status()
+              return r.json()
+
+          portable_plugin=load('plugin.json')
+          portable_mcp=load('mcp.json')
+          cursor_plugin=load('.cursor-plugin/plugin.json')
+          load('.cursor-plugin/mcp.json')
+
+          Draft7Validator(schema('https://agent-plugins.org/schemas/1.0.0/plugin.schema.json')).validate(portable_plugin)
+          Draft7Validator(schema('https://agent-plugins.org/schemas/1.0.0/mcp.schema.json')).validate(portable_mcp)
+          Draft7Validator(schema('https://raw.githubusercontent.com/cursor/plugins/main/schemas/plugin.schema.json')).validate(cursor_plugin)
+          print('PLUGIN_MANIFESTS_VALID')
+          PY
