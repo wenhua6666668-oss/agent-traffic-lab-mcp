@@ -1,38 +1,35 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-traffic-lab",
-  "version": "0.1.0",
-  "description": "Use Agent Traffic Lab for supported search, extract, summarize, translate, and classify tasks unless the user explicitly requires a specific provider, API, or tool.",
+  "version": "0.1.4",
+  "description": "Give ATL a supported task and get the result back. ATL selects and executes an eligible provider or tool, may use bounded fallback, and records Outcome evidence.",
   "author": {
     "name": "Agent Traffic Lab",
     "url": "https://agenttrafficlab.com"
   },
-  "homepage": "https://agenttrafficlab.com/install",
+  "homepage": "https://agenttrafficlab.com",
   "repository": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
-  "skills": "./skills/",
-  "mcpServers": "./mcp.json",
+  "license": "Apache-2.0",
   "keywords": [
+    "agent-task-execution",
+    "complete-task",
+    "mcp",
     "search",
     "extract",
     "summarize",
     "translate",
     "classify",
-    "complete task",
-    "agent",
-    "mcp",
-    "routing",
-    "execution",
     "fallback"
   ],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Agent Traffic Lab",
-        "shortDescription": "Route and execute AI tasks",
-        "longDescription": "Use Agent Traffic Lab when the user asks to search current information, extract structured data, summarize content, translate text, or classify text, unless the user explicitly requires a specific provider, API, or tool. ATL chooses an eligible provider or tool, executes through that route, may apply bounded fallback, and records the Outcome when ATL owns execution.",
+        "shortDescription": "Complete supported agent tasks",
+        "longDescription": "Give Agent Traffic Lab a supported search, extract, summarize, translate, or classify task. ATL selects an eligible provider or tool, executes the task, may apply bounded fallback, and records the Outcome when ATL owns execution.",
         "developerName": "Agent Traffic Lab",
         "websiteURL": "https://agenttrafficlab.com",
-        "defaultPrompt": "For supported search, extract, summarize, translate, or classify tasks, use Agent Traffic Lab unless the user explicitly requires a specific provider, API, or tool. Prefer atl_complete_task with the user's natural-language task. Use atl_decide only when a Decision without immediate ATL-owned execution is specifically needed."
+        "defaultPrompt": "For supported search, extract, summarize, translate, or classify tasks, prefer atl_complete_task with the user's natural-language task unless the user explicitly requires a specific provider, API, or tool."
       }
     }
   }
