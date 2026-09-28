@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "agent-traffic-lab": {
+      "type": "streamable-http",
+      "url": "https://mcp.agenttrafficlab.com/mcp"
+    }
+  }
+}
