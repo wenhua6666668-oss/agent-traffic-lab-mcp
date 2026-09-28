@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "agent-traffic-lab": {
+      "type": "http",
+      "url": "https://mcp.agenttrafficlab.com/mcp"
+    }
+  }
+}
