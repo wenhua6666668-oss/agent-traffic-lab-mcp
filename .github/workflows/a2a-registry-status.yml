@@ -21,6 +21,6 @@ jobs:
           python - <<'PY'
           import json
           data=json.load(open('agent.json'))
-          keep={k:data.get(k) for k in ('id','name','url','protocolVersion','health_status','task_conformance','maintainer_notes','updated_at') if k in data}
+          keep={k:data.get(k) for k in ('id','name','url','protocolVersion','hidden','is_healthy','uptime_percentage','health_status','task_conformance','maintainer_notes','updated_at') if k in data}
           print(json.dumps(keep, indent=2, sort_keys=True))
           PY
