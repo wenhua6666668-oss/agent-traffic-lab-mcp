@@ -1,0 +1,26 @@
+name: A2A Registry Status
+
+on:
+  push:
+    paths:
+      - ".github/workflows/a2a-registry-status.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read ATL registry status
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS 'https://a2aregistry.org/api/agents/942b626c-966f-4fd3-96e8-e91fa3254299' -o agent.json
+          python - <<'PY'
+          import json
+          data=json.load(open('agent.json'))
+          keep={k:data.get(k) for k in ('id','name','url','protocolVersion','health_status','task_conformance','maintainer_notes','updated_at') if k in data}
+          print(json.dumps(keep, indent=2, sort_keys=True))
+          PY
