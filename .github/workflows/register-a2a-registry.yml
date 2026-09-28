@@ -13,7 +13,7 @@ jobs:
   register:
     runs-on: ubuntu-latest
     steps:
-      - name: Register canonical ATL Agent Card
+      - name: Register or refresh canonical ATL Agent Card
         shell: bash
         run: |
           set -euo pipefail
@@ -25,6 +25,6 @@ jobs:
           cat response.json
           echo "HTTP $code"
           case "$code" in
-            2??) ;;
+            2??|409) ;;
             *) exit 1 ;;
           esac
