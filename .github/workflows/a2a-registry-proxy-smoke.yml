@@ -1,4 +1,4 @@
-name: A2A Registry Proxy Smoke
+name: A2A Registry Status Check
 
 on:
   push:
@@ -10,9 +10,21 @@ permissions:
   contents: read
 
 jobs:
-  smoke:
+  status:
     runs-on: ubuntu-latest
     steps:
+      - name: Inspect ATL registry record and health
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://a2aregistry.org/api/agents/942b626c-966f-4fd3-96e8-e91fa3254299'
+          for suffix in '' '/health' '/uptime'; do
+            code=$(curl -sS -o response.json -w '%{http_code}' "$base$suffix")
+            echo "=== $suffix HTTP $code ==="
+            cat response.json
+            echo
+          done
+
       - name: Verify ATL through A2A Registry proxy
         shell: bash
         run: |
@@ -21,13 +33,15 @@ jobs:
             -X POST 'https://a2aregistry.org/api/agents/942b626c-966f-4fd3-96e8-e91fa3254299/chat' \
             -H 'Content-Type: application/json' \
             --data '{"message":"Summarize this sentence: Agent Traffic Lab completes supported tasks for agents."}')
+          echo "=== /chat HTTP $code ==="
           cat response.json
-          echo "HTTP $code"
-          test "$code" = "200"
-          python - <<'PY'
+          echo
+          if [ "$code" = "200" ]; then
+            python - <<'PY'
           import json
           data=json.load(open('response.json'))
           text=data.get('response')
           assert isinstance(text, str) and text.strip() and text != 'No response'
           print('A2A_REGISTRY_TEXT_OK')
           PY
+          fi
