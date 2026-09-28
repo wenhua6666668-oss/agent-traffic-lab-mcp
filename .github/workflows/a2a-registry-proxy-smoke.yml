@@ -1,0 +1,33 @@
+name: A2A Registry Proxy Smoke
+
+on:
+  push:
+    paths:
+      - ".github/workflows/a2a-registry-proxy-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify ATL through A2A Registry proxy
+        shell: bash
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o response.json -w '%{http_code}' \
+            -X POST 'https://a2aregistry.org/api/agents/942b626c-966f-4fd3-96e8-e91fa3254299/chat' \
+            -H 'Content-Type: application/json' \
+            --data '{"message":"Summarize this sentence: Agent Traffic Lab completes supported tasks for agents."}')
+          cat response.json
+          echo "HTTP $code"
+          test "$code" = "200"
+          python - <<'PY'
+          import json
+          data=json.load(open('response.json'))
+          if not isinstance(data, dict):
+              raise SystemExit('registry proxy returned non-object')
+          print('A2A_REGISTRY_PROXY_OK')
+          PY
