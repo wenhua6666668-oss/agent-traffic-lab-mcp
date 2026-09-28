@@ -1,0 +1,12 @@
+{
+  "marketplace": "Cursor Marketplace",
+  "repository": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+  "plugin_manifest": ".cursor-plugin/plugin.json",
+  "mcp_config": "mcp.json",
+  "name": "agent-traffic-lab",
+  "displayName": "Agent Traffic Lab",
+  "description": "Give ATL a supported task and get the result back. ATL selects and executes an eligible provider, may use bounded fallback, and records Outcome evidence.",
+  "category": "developer-tools",
+  "keywords": ["agent task execution", "complete task", "mcp", "search", "extract", "summarize", "translate", "classify", "fallback"],
+  "endpoint": "https://mcp.agenttrafficlab.com/mcp"
+}
