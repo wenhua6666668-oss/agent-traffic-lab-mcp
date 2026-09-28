@@ -13,8 +13,6 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for production deploy
-        run: sleep 60
       - name: Verify ATL through A2A Registry proxy
         shell: bash
         run: |
@@ -29,7 +27,7 @@ jobs:
           python - <<'PY'
           import json
           data=json.load(open('response.json'))
-          assert isinstance(data, dict)
-          assert isinstance(data.get('response'), str)
-          print('A2A_REGISTRY_PROXY_OK')
+          text=data.get('response')
+          assert isinstance(text, str) and text.strip() and text != 'No response'
+          print('A2A_REGISTRY_TEXT_OK')
           PY
