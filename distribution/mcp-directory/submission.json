@@ -1,0 +1,10 @@
+{
+  "directory": "MCP.Directory",
+  "github_repository_url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+  "npm_package": "@agenttrafficlab/client",
+  "pypi_package": "agenttrafficlab",
+  "short_description": "Agent task execution layer: give ATL a task, get the result back.",
+  "canonical_endpoint": "https://mcp.agenttrafficlab.com/mcp",
+  "default_tool": "atl_complete_task",
+  "capabilities": ["search", "extract", "summarize", "translate", "classify"]
+}
