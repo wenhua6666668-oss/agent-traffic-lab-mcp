@@ -1,0 +1,30 @@
+name: Register ATL in A2A Registry
+
+on:
+  push:
+    paths:
+      - ".github/workflows/register-a2a-registry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Register canonical ATL Agent Card
+        shell: bash
+        run: |
+          set -euo pipefail
+          body='{"wellKnownURI":"https://agenttrafficlab.com/.well-known/agent-card.json"}'
+          code=$(curl -sS -o response.json -w '%{http_code}' \
+            -X POST 'https://a2aregistry.org/api/agents/register' \
+            -H 'Content-Type: application/json' \
+            --data "$body")
+          cat response.json
+          echo "HTTP $code"
+          case "$code" in
+            2??) ;;
+            *) exit 1 ;;
+          esac
