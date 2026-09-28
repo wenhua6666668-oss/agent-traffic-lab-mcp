@@ -1,0 +1,36 @@
+name: A2A Standard Smoke
+
+on:
+  push:
+    paths:
+      - ".github/workflows/a2a-standard-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify standard message/send
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload='{"jsonrpc":"2.0","id":"atl-a2a-smoke","method":"message/send","params":{"message":{"kind":"message","messageId":"atl-a2a-smoke-message","role":"user","parts":[{"kind":"text","text":"What tasks can you handle?"}]},"metadata":{}}}'
+          code=$(curl -sS -o response.json -w '%{http_code}' \
+            -X POST 'https://agenttrafficlab.com/a2a' \
+            -H 'Content-Type: application/json' \
+            -H 'User-Agent: ATL-A2A-Standard-Smoke/1.0' \
+            --data "$payload")
+          cat response.json
+          echo "HTTP $code"
+          test "$code" = "200"
+          python - <<'PY'
+          import json
+          data=json.load(open('response.json'))
+          assert data.get('jsonrpc') == '2.0'
+          assert data.get('id') == 'atl-a2a-smoke'
+          assert isinstance(data.get('result'), dict)
+          print('STANDARD_A2A_OK')
+          PY
