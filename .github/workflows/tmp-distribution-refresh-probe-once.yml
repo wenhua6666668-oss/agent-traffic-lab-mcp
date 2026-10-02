@@ -13,44 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Re-submit ATL public repo to mcp.so free indexing API
+      - name: Inspect APIs.io no-auth A2A register_agent schema
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import requests, json
-          payload={"url":"https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp","avatar_url":""}
-          r=requests.post('https://mcp.so/api/submit-project',json=payload,timeout=30)
-          print('MCPSO_STATUS',r.status_code)
-          print('MCPSO_BODY',r.text[:2000])
-          if r.status_code >= 500:
-              raise SystemExit('mcp.so server error')
-          PY
-      - name: Inspect Agent Hub register_agent schema
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import requests, json
-          u='https://agent-hub--samy-touri.run.tools'
+          u='https://apis.io/mcp'
           s=requests.Session()
-          h={'content-type':'application/json','accept':'application/json, text/event-stream','user-agent':'atl-distribution-refresh-probe/1'}
-          init={'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'atl-distribution-refresh-probe','version':'1'}}}
+          h={'content-type':'application/json','accept':'application/json, text/event-stream','user-agent':'atl-distribution-refresh-probe/2'}
+          init={'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'atl-distribution-refresh-probe','version':'2'}}}
           r=s.post(u,headers=h,json=init,timeout=30)
-          print('AGENTHUB_INIT_STATUS',r.status_code)
-          print('AGENTHUB_INIT_BODY',r.text[:1200])
+          print('APISIO_INIT_STATUS',r.status_code)
+          print('APISIO_INIT_BODY',r.text[:1000])
           r.raise_for_status()
           sid=r.headers.get('Mcp-Session-Id')
           if sid: h['Mcp-Session-Id']=sid
           s.post(u,headers=h,json={'jsonrpc':'2.0','method':'notifications/initialized','params':{}},timeout=15)
           r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}},timeout=30)
-          print('AGENTHUB_TOOLS_STATUS',r.status_code)
+          print('APISIO_TOOLS_STATUS',r.status_code)
           r.raise_for_status()
           data=r.json()
           tools=((data.get('result') or {}).get('tools') or [])
           for t in tools:
               if t.get('name')=='register_agent':
-                  print('AGENTHUB_REGISTER_SCHEMA',json.dumps(t,ensure_ascii=False,sort_keys=True))
+                  print('APISIO_REGISTER_SCHEMA',json.dumps(t,ensure_ascii=False,sort_keys=True))
                   break
           else:
               raise SystemExit('register_agent not found')
