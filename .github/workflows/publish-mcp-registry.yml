@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
@@ -13,15 +12,35 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download mcp-publisher
         run: |
-          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+          set -euo pipefail
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
           chmod +x mcp-publisher
 
-      - name: Login with GitHub OIDC
-        run: ./mcp-publisher login github-oidc
+      - name: Validate server manifest
+        run: ./mcp-publisher validate server.json
+
+      - name: Require registry signing key
+        env:
+          MCP_PRIVATE_KEY: ${{ secrets.MCP_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MCP_PRIVATE_KEY:-}" ]; then
+            echo "MCP_PRIVATE_KEY is not configured. It must match https://agenttrafficlab.com/.well-known/mcp-registry-auth." >&2
+            exit 1
+          fi
+          if ! printf '%s' "$MCP_PRIVATE_KEY" | grep -Eq '^[0-9a-fA-F]{64}$'; then
+            echo "MCP_PRIVATE_KEY must be the 64-hex Ed25519 seed expected by mcp-publisher." >&2
+            exit 1
+          fi
+
+      - name: Login with agenttrafficlab.com domain ownership
+        env:
+          MCP_PRIVATE_KEY: ${{ secrets.MCP_PRIVATE_KEY }}
+        run: ./mcp-publisher login http --domain agenttrafficlab.com --private-key "$MCP_PRIVATE_KEY"
 
       - name: Publish
         run: ./mcp-publisher publish server.json
