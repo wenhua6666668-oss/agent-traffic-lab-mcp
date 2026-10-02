@@ -13,23 +13,35 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Submit ATL Agent Card to Global A2A Registry
+      - name: Inspect live submit implementation
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import requests, json, time
-          base='https://api.a2a-registry.org'
-          h={'content-type':'application/json','user-agent':'atl-global-a2a-register/1'}
-          payload={'manifestUrl':'https://agenttrafficlab.com/.well-known/agent-card.json'}
-          r=requests.post(base+'/public/ingest',json=payload,headers=h,timeout=45)
-          print('GLOBAL_A2A_INGEST_HTTP',r.status_code)
-          print('GLOBAL_A2A_INGEST_BODY',r.text[:8000])
+          import re, requests, urllib.parse
+          h={'user-agent':'atl-global-a2a-inspect/1'}
+          page='https://www.a2a-registry.org/submit'
+          r=requests.get(page,headers=h,timeout=30)
+          print('SUBMIT_PAGE_HTTP',r.status_code)
+          print('SUBMIT_PAGE_HEAD',r.text[:2500])
           r.raise_for_status()
-          time.sleep(2)
-          for q in ('Agent Traffic Lab','provider routing','agent task execution'):
-              rr=requests.get(base+'/public/agents',params={'q':q},headers={'user-agent':'atl-global-a2a-register/1'},timeout=30)
-              print('GLOBAL_A2A_SEARCH',q,'HTTP',rr.status_code)
-              print(rr.text[:8000])
-              rr.raise_for_status()
+          srcs=re.findall(r'<script[^>]+src=["\']([^"\']+)',r.text,re.I)
+          print('SCRIPT_COUNT',len(srcs))
+          for src in srcs[:30]:
+              u=urllib.parse.urljoin(page,src)
+              try:
+                  rr=requests.get(u,headers=h,timeout=30)
+                  print('SCRIPT',u,'HTTP',rr.status_code,'LEN',len(rr.text))
+                  if rr.status_code!=200: continue
+                  txt=rr.text
+                  for needle in ('public/ingest','manifestUrl','manifest_url','/submit','api.a2a-registry.org','/public/agents'):
+                      start=0
+                      found=0
+                      while True:
+                          i=txt.find(needle,start)
+                          if i<0 or found>=6: break
+                          print('MATCH',needle,txt[max(0,i-700):i+1600])
+                          start=i+len(needle); found+=1
+              except Exception as e:
+                  print('SCRIPT_ERR',u,type(e).__name__,str(e)[:300])
           PY
