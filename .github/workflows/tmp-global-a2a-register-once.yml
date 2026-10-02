@@ -1,0 +1,35 @@
+name: TMP Global A2A Register Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-global-a2a-register-once.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Submit ATL Agent Card to Global A2A Registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import requests, json, time
+          base='https://api.a2a-registry.org'
+          h={'content-type':'application/json','user-agent':'atl-global-a2a-register/1'}
+          payload={'manifestUrl':'https://agenttrafficlab.com/.well-known/agent-card.json'}
+          r=requests.post(base+'/public/ingest',json=payload,headers=h,timeout=45)
+          print('GLOBAL_A2A_INGEST_HTTP',r.status_code)
+          print('GLOBAL_A2A_INGEST_BODY',r.text[:8000])
+          r.raise_for_status()
+          time.sleep(2)
+          for q in ('Agent Traffic Lab','provider routing','agent task execution'):
+              rr=requests.get(base+'/public/agents',params={'q':q},headers={'user-agent':'atl-global-a2a-register/1'},timeout=30)
+              print('GLOBAL_A2A_SEARCH',q,'HTTP',rr.status_code)
+              print(rr.text[:8000])
+              rr.raise_for_status()
+          PY
