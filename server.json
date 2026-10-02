@@ -3,7 +3,7 @@
   "name": "com.agenttrafficlab/atl",
   "title": "Agent Traffic Lab",
   "description": "Execute supported agent tasks through verified providers with fallback and durable outcomes.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "remotes": [{"type": "streamable-http", "url": "https://mcp.agenttrafficlab.com/mcp"}],
   "repository": {"url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp", "source": "github"},
   "websiteUrl": "https://agenttrafficlab.com",
