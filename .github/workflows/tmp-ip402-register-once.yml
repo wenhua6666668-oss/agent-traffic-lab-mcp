@@ -1,0 +1,55 @@
+name: TMP IP402 Register Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-ip402-register-once.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Register ATL with public A2A registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, requests
+          u='https://registry.ip402.xyz/mcp'
+          s=requests.Session()
+          h={'content-type':'application/json','accept':'application/json, text/event-stream','user-agent':'atl-ip402-register/1'}
+          init={'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'atl-ip402-register','version':'1'}}}
+          r=s.post(u,headers=h,json=init,timeout=30)
+          print('INIT',r.status_code,r.text[:1000])
+          r.raise_for_status()
+          sid=r.headers.get('Mcp-Session-Id')
+          if sid: h['Mcp-Session-Id']=sid
+          s.post(u,headers=h,json={'jsonrpc':'2.0','method':'notifications/initialized','params':{}},timeout=15)
+          r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}},timeout=30)
+          r.raise_for_status()
+          tools=((r.json().get('result') or {}).get('tools') or [])
+          reg=next((t for t in tools if t.get('name')=='register_agent'),None)
+          print('REGISTER_SCHEMA',json.dumps(reg,ensure_ascii=False,sort_keys=True))
+          if not reg: raise SystemExit('register_agent missing')
+          schema=reg.get('inputSchema') or {}
+          props=schema.get('properties') or {}
+          args={}
+          for key in ('url','agent_url','card_url'):
+              if key in props:
+                  args[key]='https://agenttrafficlab.com/.well-known/agent-card.json'
+                  break
+          if not args:
+              raise SystemExit('unknown registration url field')
+          r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':3,'method':'tools/call','params':{'name':'register_agent','arguments':args}},timeout=60)
+          print('REGISTER_HTTP',r.status_code)
+          print('REGISTER_BODY',r.text[:5000])
+          r.raise_for_status()
+          data=r.json(); result=data.get('result') or {}
+          if result.get('isError') is True:
+              raise SystemExit('register_agent returned isError')
+          print('IP402_REGISTER_CALL_COMPLETED')
+          PY
