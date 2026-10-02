@@ -9,11 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  refresh_probe:
+  register:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Inspect APIs.io no-auth A2A register_agent schema
+      - name: Register ATL A2A card with APIs.io no-auth agent registry
         shell: bash
         run: |
           set -euo pipefail
@@ -21,24 +21,19 @@ jobs:
           import requests, json
           u='https://apis.io/mcp'
           s=requests.Session()
-          h={'content-type':'application/json','accept':'application/json, text/event-stream','user-agent':'atl-distribution-refresh-probe/2'}
-          init={'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'atl-distribution-refresh-probe','version':'2'}}}
-          r=s.post(u,headers=h,json=init,timeout=30)
-          print('APISIO_INIT_STATUS',r.status_code)
-          print('APISIO_INIT_BODY',r.text[:1000])
+          h={'content-type':'application/json','accept':'application/json, text/event-stream','user-agent':'atl-distribution-register/1'}
+          r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'atl-distribution-register','version':'1'}}},timeout=30)
           r.raise_for_status()
           sid=r.headers.get('Mcp-Session-Id')
           if sid: h['Mcp-Session-Id']=sid
           s.post(u,headers=h,json={'jsonrpc':'2.0','method':'notifications/initialized','params':{}},timeout=15)
-          r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}},timeout=30)
-          print('APISIO_TOOLS_STATUS',r.status_code)
+          args={
+            'card_url':'https://agenttrafficlab.com/.well-known/agent-card.json',
+            'operator':'Agent Traffic Lab',
+            'context':'Publish the canonical Agent Traffic Lab A2A identity so agents can discover its supported task-execution capabilities.'
+          }
+          r=s.post(u,headers=h,json={'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'register_agent','arguments':args}},timeout=45)
+          print('APISIO_REGISTER_HTTP',r.status_code)
+          print('APISIO_REGISTER_BODY',r.text[:5000])
           r.raise_for_status()
-          data=r.json()
-          tools=((data.get('result') or {}).get('tools') or [])
-          for t in tools:
-              if t.get('name')=='register_agent':
-                  print('APISIO_REGISTER_SCHEMA',json.dumps(t,ensure_ascii=False,sort_keys=True))
-                  break
-          else:
-              raise SystemExit('register_agent not found')
           PY
