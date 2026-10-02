@@ -22,5 +22,5 @@ jobs:
           chmod +x mcp-publisher
       - name: Login with GitHub OIDC
         run: ./mcp-publisher login github-oidc
-      - name: Publish 0.1.4
+      - name: Publish 0.1.4 retry
         run: ./mcp-publisher publish server.json
