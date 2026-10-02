@@ -9,42 +9,26 @@ permissions:
   contents: read
 
 jobs:
-  register:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
-      - name: Scan and register ATL with Global A2A Registry
+      - name: Verify ATL registry record
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import requests, json, time
+          import requests
           base='https://api.a2a-registry.org'
-          h={'content-type':'application/json','accept':'application/json','user-agent':'atl-global-a2a-register/2'}
-          url='https://agenttrafficlab.com'
-          r=requests.post(base+'/public/ingest/scan',json={'url':url},headers=h,timeout=60)
-          print('GLOBAL_A2A_SCAN_HTTP',r.status_code)
-          print('GLOBAL_A2A_SCAN_BODY',r.text[:12000])
-          r.raise_for_status()
-          data=r.json()
-          if not data.get('success'):
-              raise SystemExit('scan did not succeed')
-          scan=data.get('data') or {}
-          if not scan.get('found'):
-              raise SystemExit('ATL agent not detected by registry scan')
-          r=requests.post(base+'/public/ingest/submit-and-claim',json={'url':url},headers=h,timeout=60)
-          print('GLOBAL_A2A_SUBMIT_HTTP',r.status_code)
-          print('GLOBAL_A2A_SUBMIT_BODY',r.text[:12000])
-          r.raise_for_status()
-          data=r.json()
-          if not data.get('success'):
-              raise SystemExit('submit-and-claim did not succeed')
-          time.sleep(2)
-          for path,params in [('/public/agents',{'q':'Agent Traffic Lab'}),('/public/agents',{'q':'provider routing'}),('/public/agents',{'q':'agent task execution'})]:
-              rr=requests.get(base+path,params=params,headers={'user-agent':'atl-global-a2a-register/2'},timeout=30)
-              print('GLOBAL_A2A_QUERY',params['q'],'HTTP',rr.status_code)
-              print(rr.text[:12000])
-              if rr.status_code < 500:
-                  continue
-              rr.raise_for_status()
+          h={'user-agent':'atl-global-a2a-verify/1'}
+          agent_id='1af1f124-abee-4f92-83f9-6647732091a8'
+          for path,params in [
+              (f'/public/agents/{agent_id}',None),
+              ('/public/agents',{'q':'com.agenttrafficlab.agent_traffic_lab'}),
+              ('/public/agents',{'q':'Agent Traffic Lab'})
+          ]:
+              r=requests.get(base+path,params=params,headers=h,timeout=30)
+              print('VERIFY',path,params,'HTTP',r.status_code)
+              print(r.text[:16000])
+              r.raise_for_status()
           PY
