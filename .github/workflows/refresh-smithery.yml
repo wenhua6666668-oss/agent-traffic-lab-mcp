@@ -1,0 +1,36 @@
+name: Refresh Smithery ATL listing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refresh-smithery.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Smithery API key
+        env:
+          SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${SMITHERY_API_KEY:-}" ]; then
+            echo "SMITHERY_API_KEY is not configured in this repository." >&2
+            exit 1
+          fi
+
+      - name: Republish canonical ATL external release
+        env:
+          SMITHERY_API_KEY: ${{ secrets.SMITHERY_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS -X PUT \
+            'https://api.smithery.ai/servers/wenhua6666668%2Fagent-traffic-lab/releases' \
+            -H "Authorization: Bearer ${SMITHERY_API_KEY}" \
+            -F 'payload={"type":"external","upstreamUrl":"https://mcp.agenttrafficlab.com/mcp"}'
