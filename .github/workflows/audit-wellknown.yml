@@ -1,0 +1,23 @@
+name: Inspect WellKnown audit tool
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-wellknown.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List WellKnown MCP tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS 'https://wellknownhq.com/mcp?via=atl-discovery' \
+            -H 'Content-Type: application/json' \
+            -H 'MCP-Protocol-Version: 2026-07-28' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
