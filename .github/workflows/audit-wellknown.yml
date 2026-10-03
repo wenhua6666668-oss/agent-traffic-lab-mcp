@@ -1,4 +1,4 @@
-name: Inspect WellKnown audit tool
+name: Audit ATL with WellKnown
 
 on:
   push:
@@ -10,14 +10,14 @@ permissions:
   contents: read
 
 jobs:
-  inspect:
+  audit:
     runs-on: ubuntu-latest
     steps:
-      - name: List WellKnown MCP tools
+      - name: Audit ATL domain discoverability
         shell: bash
         run: |
           set -euo pipefail
           curl -fsS 'https://wellknownhq.com/mcp?via=atl-discovery' \
             -H 'Content-Type: application/json' \
             -H 'MCP-Protocol-Version: 2026-07-28' \
-            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+            -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"audit_domain","arguments":{"domain":"agenttrafficlab.com"}}}'
