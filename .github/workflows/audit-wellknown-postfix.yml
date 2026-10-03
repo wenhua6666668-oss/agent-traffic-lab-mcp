@@ -1,0 +1,23 @@
+name: Audit ATL with WellKnown after ARD fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-wellknown-postfix.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Audit ATL domain discoverability
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsS 'https://wellknownhq.com/mcp?via=atl-discovery' \
+            -H 'Content-Type: application/json' \
+            -H 'MCP-Protocol-Version: 2026-07-28' \
+            -d '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"audit_domain","arguments":{"domain":"agenttrafficlab.com"}}}'
