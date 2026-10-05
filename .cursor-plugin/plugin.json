@@ -1,7 +1,7 @@
 {
   "name": "agent-traffic-lab",
   "displayName": "Agent Traffic Lab",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "minClientVersions": {
     "cursor": "3.13.0"
   },
