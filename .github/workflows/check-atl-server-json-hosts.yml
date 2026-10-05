@@ -1,0 +1,29 @@
+name: Check ATL server.json hosts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-atl-server-json-hosts.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe server.json on both hosts
+        shell: bash
+        run: |
+          set -euo pipefail
+          for url in \
+            'https://agenttrafficlab.com/server.json' \
+            'https://mcp.agenttrafficlab.com/server.json'; do
+            echo "=== $url ==="
+            curl -sS -o /tmp/body -D /tmp/headers -w 'HTTP %{http_code}\n' "$url" || true
+            head -20 /tmp/headers
+            echo '-- body --'
+            head -c 300 /tmp/body || true
+            echo
+          done
