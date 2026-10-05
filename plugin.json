@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-traffic-lab",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Give ATL a supported task and get the result back. ATL selects and executes an eligible provider or tool, may use bounded fallback, and records Outcome evidence.",
   "author": {
     "name": "Agent Traffic Lab",
