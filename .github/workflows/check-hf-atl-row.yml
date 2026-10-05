@@ -1,0 +1,25 @@
+name: Check Hugging Face ATL ARD row
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-hf-atl-row.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch current servers snapshot and find ATL
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 2 -o /tmp/servers.jsonl \
+            'https://huggingface.co/datasets/AgenticResourceDiscovery/verified-mcp-tools/resolve/main/servers.jsonl'
+          echo '=== ATL rows ==='
+          grep -i 'agenttrafficlab' /tmp/servers.jsonl || true
+          echo '=== snapshot headers ==='
+          curl -sSI 'https://huggingface.co/datasets/AgenticResourceDiscovery/verified-mcp-tools/resolve/main/servers.jsonl' | head -20
