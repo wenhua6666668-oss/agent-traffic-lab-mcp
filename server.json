@@ -3,9 +3,17 @@
   "name": "com.agenttrafficlab/atl",
   "title": "Agent Traffic Lab",
   "description": "Execute supported agent tasks through verified providers with fallback and durable outcomes.",
-  "version": "0.1.5",
-  "remotes": [{"type": "streamable-http", "url": "https://mcp.agenttrafficlab.com/mcp"}],
-  "repository": {"url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp", "source": "github"},
+  "version": "0.1.6",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.agenttrafficlab.com/mcp"
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp",
+    "source": "github"
+  },
   "websiteUrl": "https://agenttrafficlab.com",
   "metadata": {
     "discovery_status": "published",
@@ -21,12 +29,33 @@
     "base_url": "https://agenttrafficlab.com",
     "install_url": "https://agenttrafficlab.com/install",
     "first_trial_auth_required": false,
-    "public_tools": ["atl_complete_task", "atl_decide", "atl_execute", "atl_outcome"],
-    "safe_v1_capabilities": ["search", "extract", "summarize", "translate", "classify"],
-    "task_categories": ["search", "research and data", "web and content extraction", "summarization", "translation", "classification", "agent task execution"],
+    "public_tools": [
+      "atl_complete_task",
+      "atl_decide",
+      "atl_execute",
+      "atl_outcome"
+    ],
+    "safe_v1_capabilities": [
+      "search",
+      "extract",
+      "summarize",
+      "translate",
+      "classify"
+    ],
+    "task_categories": [
+      "search",
+      "research and data",
+      "web and content extraction",
+      "summarization",
+      "translation",
+      "classification",
+      "agent task execution"
+    ],
     "first_use": {
       "tool": "atl_complete_task",
-      "minimum_arguments": ["task"],
+      "minimum_arguments": [
+        "task"
+      ],
       "capability_inference": true,
       "advanced_decision_tool": "atl_decide",
       "instruction": "Give ATL the natural-language task. Keep provider selection, execution, bounded fallback, and Outcome inside ATL when possible."
@@ -50,8 +79,63 @@
       "use a more reliable eligible provider",
       "optimize execution for reliability, latency, cost, region, or policy"
     ],
-    "keywords": ["complete task", "agent task execution", "task in result out", "search", "web search", "research", "research and data", "extract", "web extraction", "content extraction", "structured extraction", "summarize", "summarization", "translate", "translation", "classify", "classification", "find provider", "find a provider", "find a tool", "find MCP server", "AI provider routing", "MCP routing", "tool discovery", "provider selection", "provider failed", "find fallback", "fallback provider", "cheaper provider", "faster provider", "more reliable provider", "low latency provider", "low cost provider", "reliable provider", "execute this task", "execution route", "automatic outcome", "fallback", "failover"],
-    "host_install_surfaces": ["Claude Code", "Codex", "Cursor", "VS Code MCP", "GitHub Copilot Agent", "Windsurf", "OpenAI Agents SDK", "Google ADK", "Microsoft Agent Framework", "PydanticAI", "LangChain", "LangGraph", "Anthropic Claude API MCP Connector", "Official MCP Registry"],
+    "keywords": [
+      "complete task",
+      "agent task execution",
+      "task in result out",
+      "search",
+      "web search",
+      "research",
+      "research and data",
+      "extract",
+      "web extraction",
+      "content extraction",
+      "structured extraction",
+      "summarize",
+      "summarization",
+      "translate",
+      "translation",
+      "classify",
+      "classification",
+      "find provider",
+      "find a provider",
+      "find a tool",
+      "find MCP server",
+      "AI provider routing",
+      "MCP routing",
+      "tool discovery",
+      "provider selection",
+      "provider failed",
+      "find fallback",
+      "fallback provider",
+      "cheaper provider",
+      "faster provider",
+      "more reliable provider",
+      "low latency provider",
+      "low cost provider",
+      "reliable provider",
+      "execute this task",
+      "execution route",
+      "automatic outcome",
+      "fallback",
+      "failover"
+    ],
+    "host_install_surfaces": [
+      "Claude Code",
+      "Codex",
+      "Cursor",
+      "VS Code MCP",
+      "GitHub Copilot Agent",
+      "Windsurf",
+      "OpenAI Agents SDK",
+      "Google ADK",
+      "Microsoft Agent Framework",
+      "PydanticAI",
+      "LangChain",
+      "LangGraph",
+      "Anthropic Claude API MCP Connector",
+      "Official MCP Registry"
+    ],
     "machine_signal_version": "0.5",
     "machine_signal_ref": "/.well-known/atl-machine-identity.json"
   }
