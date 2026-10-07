@@ -301,6 +301,7 @@ For ATL-owned execution, `atl_complete_task` is the preferred default entrance. 
 ## Links
 
 - Homepage: https://agenttrafficlab.com
+- Owner/support contact: https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp/issues
 - Smithery: https://smithery.ai/servers/wenhua6666668/agent-traffic-lab
 - Install guide: https://agenttrafficlab.com/install
 - Remote MCP: https://mcp.agenttrafficlab.com/mcp

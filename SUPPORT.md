@@ -4,6 +4,12 @@ For installation, MCP connectivity, plugin packaging, routing, or execution issu
 
 https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp
 
+**Owner/support contact:** open a public GitHub issue at:
+
+https://github.com/wenhua6666668-oss/agent-traffic-lab-mcp/issues
+
+This is the canonical public contact surface for catalog moderators, MCP directory maintainers, and users who need to report metadata or connectivity problems without sharing secrets.
+
 ## Before reporting an issue
 
 Please include, when safe to share:
