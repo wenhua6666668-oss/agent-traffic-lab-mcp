@@ -85,16 +85,24 @@ https://agenttrafficlab.com/install
 
 ATL can be attached directly as a remote Streamable HTTP MCP server; no ATL-specific adapter is required.
 
+For first-use validation, filter the model-facing ATL surface to only `atl_complete_task`; the advanced tools remain available on the canonical server but do not need to be shown to the model.
+
 Python:
 
 ```python
 from agents import Agent, Runner
-from agents.mcp import MCPServerStreamableHttp
+from agents.mcp import MCPServerStreamableHttp, create_static_tool_filter
 
 async with MCPServerStreamableHttp(
     name="Agent Traffic Lab",
-    params={"url": "https://mcp.agenttrafficlab.com/mcp"},
+    params={
+        "url": "https://mcp.agenttrafficlab.com/mcp",
+        "headers": {"X-ATL-Platform": "openai-agents"},
+    },
     cache_tools_list=True,
+    tool_filter=create_static_tool_filter(
+        allowed_tool_names=["atl_complete_task"]
+    ),
 ) as atl:
     agent = Agent(
         name="Assistant",
@@ -108,6 +116,20 @@ async with MCPServerStreamableHttp(
     )
     result = await Runner.run(agent, "Search for the latest critical CVE.")
 ```
+
+## Anthropic Claude remote connector
+
+For the first-use profile, connect Claude to the same canonical remote MCP endpoint:
+
+`https://mcp.agenttrafficlab.com/mcp`
+
+Add the fixed request header:
+
+`X-ATL-Platform: claude`
+
+Then use Claude's tool controls to disable `atl_decide`, `atl_execute`, and `atl_outcome`, leaving only `atl_complete_task` enabled for normal task-in/result-out work.
+
+This deliberately gives the model a one-tool ATL surface during first-use validation while the canonical server continues to expose the full four-tool contract for advanced callers.
 
 ## Google Agent Development Kit (ADK)
 
