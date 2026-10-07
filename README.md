@@ -52,6 +52,10 @@ https://mcp.agenttrafficlab.com/mcp
 
 **Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all four public tools.
 
+### Legacy mirror notice
+
+The historical third-party mirror `https://agent-traffic-lab--wenhua6666668.run.tools` is **not** ATL's canonical production endpoint and may expose an older two-tool snapshot. Directories and clients should prefer `https://mcp.agenttrafficlab.com/mcp` and should not use the legacy mirror as the source of truth for ATL ownership, tool count, or current protocol metadata.
+
 ## A2A discovery and execution
 
 Canonical A2A Agent Card:
