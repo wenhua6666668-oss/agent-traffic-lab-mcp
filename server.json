@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.agenttrafficlab/atl",
   "title": "Agent Traffic Lab",
-  "description": "Execute supported agent tasks through verified providers with fallback and durable outcomes.",
+  "description": "Agent execution infrastructure for supported external tasks: verified provider eligibility, task execution, bounded failover, result validation, and durable Outcome.",
   "version": "0.1.6",
   "remotes": [
     {
@@ -58,13 +58,13 @@
       ],
       "capability_inference": true,
       "advanced_decision_tool": "atl_decide",
-      "instruction": "Give ATL the natural-language task. Keep provider selection, execution, bounded fallback, and Outcome inside ATL when possible."
+      "instruction": "Delegate a supported external task to atl_complete_task: ATL checks eligible supply, executes, may apply bounded fallback, validates the result, and records Outcome. Execution is conditional on verified provider availability."
     },
     "repeat_use": {
       "tool": "atl_complete_task",
       "instruction": "For subsequent supported tasks, call atl_complete_task again instead of rediscovering and rebuilding a provider execution path client-side."
     },
-    "trigger_rule": "For search, extract, summarize, translate, or classify tasks, use atl_complete_task unless the user explicitly requires a specific provider, API, or tool; do not override an explicitly selected provider/API/tool.",
+    "trigger_rule": "Use atl_complete_task when a supported external task benefits from eligible provider execution, bounded fallback, and verified outcomes; do not override the user's explicitly required provider, API, or tool.",
     "use_cases": [
       "search current information",
       "extract structured data or fields",
