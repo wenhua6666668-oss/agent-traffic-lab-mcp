@@ -2,7 +2,7 @@
 
 [![Smithery badge](https://smithery.ai/badge/wenhua6666668/agent-traffic-lab)](https://smithery.ai/servers/wenhua6666668/agent-traffic-lab)
 
-ATL doesn’t just help agents find tools — it gets the job done. Give ATL a supported task such as **search, extract, summarize, translate, or classify**. ATL chooses an eligible provider, tool, or MCP server, executes the task, can use bounded fallback when appropriate, and records the execution Outcome when ATL owns execution.
+ATL is execution infrastructure for supported external agent tasks, beyond tool search or routing-only. Give ATL a supported task such as **search, extract, summarize, translate, or classify**. ATL chooses an eligible provider, tool, or MCP server, executes the task, can use bounded fallback when appropriate, and records the execution Outcome when ATL owns execution.
 
 ## Fastest first use
 
@@ -26,7 +26,7 @@ No API key is required for the initial public-use path.
 
 **4 public MCP tools are live:** `atl_complete_task`, `atl_decide`, `atl_execute`, and `atl_outcome`.
 
-The production MCP endpoint exposes all four through `tools/list`.
+The production MCP endpoint has four public tool definitions, but its default first-use `tools/list` profile exposes only `atl_complete_task`. Clients explicitly requesting the advanced profile can discover `atl_complete_task`, `atl_decide`, `atl_execute`, and `atl_outcome`.
 
 `atl_complete_task` is the default first-use tool. `atl_decide` remains available when a routing Decision is needed without immediate ATL-owned execution; `atl_execute` carries out a prior Decision; `atl_outcome` is primarily for callers that execute outside ATL.
 

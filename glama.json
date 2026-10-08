@@ -4,8 +4,13 @@
     "wenhua6666668-oss"
   ],
   "name": "Agent Traffic Lab",
-  "description": "Give ATL a supported task and get the result back. Prefer atl_complete_task: ATL selects an eligible provider or tool, executes search/extract/summarize/translate/classify tasks, applies bounded fallback when needed, and records the Outcome automatically. Advanced tools remain available for routing-only, decision-bound execution, or external-result feedback.",
+  "description": "Agent execution infrastructure for supported external tasks. Delegate through atl_complete_task for eligible provider verification, task execution, bounded failover on eligible failures, result validation, and automatic Outcome. Availability depends on verified supply; no ATL API key is needed for public first use.",
   "keywords": [
+    "agent-execution-infrastructure",
+    "verified-provider-eligibility",
+    "bounded-failover",
+    "result-validation",
+    "durable-outcome",
     "agent-task-execution",
     "complete-task",
     "atl-complete-task",
