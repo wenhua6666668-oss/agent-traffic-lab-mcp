@@ -12,7 +12,7 @@ Connect the canonical remote MCP endpoint:
 
 Then start with one natural-language argument:
 
-`atl_complete_task({"task": "search for the latest critical CVE"})`
+`atl_complete_task({"task": "Summarize this support ticket in one sentence: The customer cannot sign in after resetting their password."})`
 
 ATL can infer the safe V1 capability when possible. `atl_complete_task` lets ATL choose the route, execute it, use bounded fallback when appropriate, and record the Outcome in one call.
 
@@ -20,7 +20,7 @@ Default loop:
 
 `ordinary task -> atl_complete_task(task) -> real provider/tool -> automatic durable Outcome`
 
-No API key is required for the initial public-use path.
+No ATL API key is required for the initial public-use path. ATL runtime credentials require current provider evidence of zero billing impact (`FREE_CONFIRMED`); unknown billing is rejected. This is not a blanket free-provider guarantee.
 
 ## Live discovery status
 
@@ -50,7 +50,7 @@ ATL is a routing and execution layer, not a standalone search engine or generic 
 
 https://mcp.agenttrafficlab.com/mcp
 
-**Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list` and currently exposes all four public tools.
+**Canonical direct endpoint:** use the URL above for production connections. Third-party mirrors and hosted proxy URLs may lag the live ATL tool surface; the canonical endpoint is the source of truth for `tools/list`: the default profile exposes `atl_complete_task`; request `X-ATL-Tool-Profile: advanced` to discover all four public tools.
 
 ### Legacy mirror notice
 
@@ -118,7 +118,7 @@ async with MCPServerStreamableHttp(
         ),
         mcp_servers=[atl],
     )
-    result = await Runner.run(agent, "Search for the latest critical CVE.")
+    result = await Runner.run(agent, "Summarize this support ticket in one sentence: The customer cannot sign in after resetting their password.")
 ```
 
 ## Anthropic Claude remote connector
@@ -208,7 +208,7 @@ agent = Agent(
     toolsets=[atl],
 )
 
-result = await agent.run("Search for the latest critical CVE.")
+result = await agent.run("Summarize this support ticket in one sentence: The customer cannot sign in after resetting their password.")
 ```
 
 ## LangChain / LangGraph
@@ -236,7 +236,7 @@ agent = create_agent(
     ),
 )
 
-result = await agent.ainvoke({"messages": "Search for the latest critical CVE."})
+result = await agent.ainvoke({"messages": "Summarize this support ticket in one sentence: The customer cannot sign in after resetting their password."})
 ```
 
 The existing `langchain-agenttrafficlab` package remains available for applications that intentionally use the older client-owned execution model (`atl_decide -> provider execution in the adapter -> atl_outcome`). The native MCP path above is preferred when ATL should own execution.
@@ -251,13 +251,15 @@ Add this to your agent instructions so ATL can be called automatically:
 
 Ask naturally:
 
-> Search for the latest critical CVE.
+> Use ATL to summarize this support ticket in one sentence: The customer cannot sign in after resetting their password.
 
 Expected loop:
 
 `atl_complete_task -> real provider -> EXECUTED -> durable automatic Outcome`
 
-You do not need to name a provider or capability for the supported V1 first-use path; ATL can infer the capability when the task is clear.
+You do not need to name a provider or capability; ATL can infer the capability when the task is clear. Include the actual task input. Product success requires `structuredContent.ok=true`, `execution_status=EXECUTED`, and `result_validation.passed=true`; HTTP 200 alone is not success. Availability depends on eligible verified supply; search and other capabilities may return no executable provider.
+
+The supplied-text summary above was rechecked against production on 2026-10-09: verified completion, one provider attempt, `FREE_CONFIRMED`, observed cost 0.0, and durable successful Outcome. This was an explicitly marked audit, not organic conversion.
 
 ## Install SDKs
 
