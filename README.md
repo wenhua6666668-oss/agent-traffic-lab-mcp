@@ -1,6 +1,6 @@
 # Agent Traffic Lab
 
-[![Smithery badge](https://smithery.ai/badge/wenhua6666668/agent-traffic-lab)](https://smithery.ai/servers/wenhua6666668/agent-traffic-lab)
+[![LightNow capabilities](https://lightnow.ai/badge/com.agenttrafficlab/atl)](https://lightnow.ai/servers/com.agenttrafficlab/atl) · [Smithery](https://smithery.ai/servers/wenhua6666668/agent-traffic-lab)
 
 ATL is execution infrastructure for supported external agent tasks, beyond tool search or routing-only. Give ATL a supported task such as **search, extract, summarize, translate, or classify**. ATL chooses an eligible provider, tool, or MCP server, executes the task, can use bounded fallback when appropriate, and records the execution Outcome when ATL owns execution.
 
